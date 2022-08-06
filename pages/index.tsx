@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { NextPage } from 'next/types';
 import { Jumbotron } from '../components/jumbotron';
+import { LatestPlanets } from '../components/latest-planets';
 import { SectionSeparator } from '../components/section-separator';
 
 const Home: NextPage = () => {
@@ -23,6 +24,7 @@ const Home: NextPage = () => {
 
         {/* Section Wrapper */}
         <SectionSeparator title="The latest creations" style="mt-20" />
+        <LatestPlanets />
         {/* Latest 5 Planets */}
 
         {/* Section Wrapper */}
