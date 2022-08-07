@@ -19,7 +19,7 @@ export const Card = ({ planet, index, tabIndex, style = {} }: Props) => {
 
   return (
     <div className="w-full h-full" {...settings}>
-      <div className="mx-auto my-4 overflow-hidden border shadow-md w-96 lg:w-72 shadow-gx-purple-500 border-gx-purple-500/50 rounded-2xl hover:scale-105">
+      <div className="mx-auto my-4 overflow-hidden border shadow-md cursor-pointer w-96 lg:w-72 shadow-gx-purple-500 border-gx-purple-500/50 rounded-2xl hover:scale-105 hover:shadow-purple-neon-500 hover:shadow-lg">
         <div className="relative w-full h-28">
           <Image src={Placeholder} layout="fill" alt="" />
         </div>

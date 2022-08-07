@@ -4,8 +4,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Change Autocomplete styles in Chrome*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  border-bottom-width: 2px;
+  border-color: rgb(100 116 139);
+  -webkit-text-fill-color: rgb(229 216 255);
+  -webkit-box-shadow: 0 0 0px 1000px rgb(20 16 30) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill:focus {
+  border-color: rgb(103 71 227);
+}
+
 @layer components {
   html {
     @apply bg-bg-500 font-roboto;
+  }
+}
+
+@layer utilities {
+  .mosaic {
+    @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4;
+    grid-auto-rows: 10px;
   }
 }

@@ -1,7 +1,10 @@
 import Head from 'next/head';
-import { NextPage } from 'next/types';
+import type { NextPage } from 'next/types';
+
+import { Navbar } from '../components/navbar';
 import { Jumbotron } from '../components/jumbotron';
 import { LatestPlanets } from '../components/latest-planets';
+import { PlanetList } from '../components/planet-list';
 import { SectionSeparator } from '../components/section-separator';
 
 const Home: NextPage = () => {
@@ -16,20 +19,17 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="w-48 border h-80 border-gx-purple-500"></header>
+      <Navbar />
 
       <main className="w-3/4 mx-auto">
-        {/* Jumbotron */}
         <Jumbotron />
 
-        {/* Section Wrapper */}
         <SectionSeparator title="The latest creations" style="mt-20" />
         <LatestPlanets />
-        {/* Latest 5 Planets */}
 
         {/* Section Wrapper */}
-        {/* <SectionSeparator /> */}
-        {/* Explore different Planets */}
+        <SectionSeparator title="Explore different planets" style="mt-20" />
+        <PlanetList />
       </main>
     </div>
   );
