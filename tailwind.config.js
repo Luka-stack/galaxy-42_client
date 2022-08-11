@@ -74,6 +74,12 @@ module.exports = {
       fontFamily: {
         roboto: ['Roboto'],
       },
+      keyframes: {
+        'loading-bounce': {
+          '0%, 100%': { transform: 'translateY(-3%)' },
+          '50%': { transform: 'none' },
+        },
+      },
     },
   },
   plugins: [],
