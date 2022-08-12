@@ -1,69 +1,65 @@
-import { FormEvent, useRef, useState } from 'react';
+import * as yup from 'yup';
+import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
 import type { NextPage } from 'next/types';
+import { useLazyQuery } from '@apollo/client';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { emailValidation, emptyValidation } from '../utils/validations';
-import { useLazyQuery } from '@apollo/client';
 import { LoginInput, LOGIN_USER, User } from '../lib/graphql/users';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { authState } from '../lib/recoil/atoms/auth-autom';
+
+type FormValues = {
+  email: string;
+  password: string;
+};
+
+const FormSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Must be a valid email address')
+    .required('Email is required'),
+  password: yup.string().required('Password is required'),
+});
 
 const Login: NextPage = () => {
   const router = useRouter();
 
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const setAuthUser = useSetRecoilState(authState);
 
-  const email = useRef<any>(null);
-  const password = useRef<any>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({ resolver: yupResolver(FormSchema) });
 
-  const [login, { loading, error }] = useLazyQuery<User, LoginInput>(
+  const [login, { loading, error }] = useLazyQuery<{ login: User }, LoginInput>(
     LOGIN_USER,
     {
-      onCompleted: (data) => {
-        console.log(data);
+      onCompleted: ({ login }) => {
+        setAuthUser(login);
+        router.push('/');
       },
       onError: (_) => {},
     }
   );
 
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const onSubmit = (data: FormValues) => {
+    const { email, password } = data;
 
-    const emailInput: HTMLInputElement = email.current;
-    const passwordInput: HTMLInputElement = password.current;
-
-    let isValid = true;
-
-    if (emailInput) {
-      const error = emailValidation(emailInput.value);
-      emailInput.setCustomValidity(error);
-      setEmailError(error);
-
-      isValid = isValid && error === '';
-    }
-
-    if (passwordInput) {
-      const error = emptyValidation(passwordInput.value);
-      passwordInput.setCustomValidity(error);
-      setPasswordError(error);
-
-      isValid = isValid && error === '';
-    }
-
-    if (isValid) {
-      login({
-        variables: {
-          user: {
-            email: emailInput.value,
-            password: passwordInput.value,
-          },
+    login({
+      variables: {
+        user: {
+          email,
+          password,
         },
-      });
-    }
+      },
+    });
   };
 
   return (
@@ -105,17 +101,16 @@ const Login: NextPage = () => {
 
             <form
               className="flex flex-col space-y-10 w-72"
-              onSubmit={onSubmit}
+              onSubmit={handleSubmit(onSubmit)}
               noValidate
             >
               <div className="relative">
                 <input
                   id="email"
-                  name="email"
                   type="text"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-500 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 invalid:border-pink-500 focus:invalid:border-pink-500"
+                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-500 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500"
                   placeholder="placeholder"
-                  ref={email}
+                  {...register('email')}
                 />
 
                 <label
@@ -124,9 +119,11 @@ const Login: NextPage = () => {
                 >
                   Email address
                 </label>
-                <p className="hidden mt-2 text-xs italic text-pink-500 peer-invalid:block">
-                  {emailError}
-                </p>
+                {errors.email && (
+                  <p className="mt-2 text-xs italic text-pink-500">
+                    {errors.email.message}
+                  </p>
+                )}
                 {error && (
                   <p className="mt-2 text-xs italic text-pink-500">
                     {error.message}
@@ -137,11 +134,10 @@ const Login: NextPage = () => {
               <div className="relative">
                 <input
                   id="password"
-                  name="password"
                   type="password"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500 invalid:border-pink-500 focus:invalid:border-pink-500"
+                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
                   placeholder="placeholder"
-                  ref={password}
+                  {...register('password')}
                 />
                 <label
                   htmlFor="password"
@@ -149,9 +145,11 @@ const Login: NextPage = () => {
                 >
                   Password
                 </label>
-                <p className="hidden mt-2 text-xs italic text-pink-500 whitespace-pre peer-invalid:block">
-                  {passwordError}
-                </p>
+                {errors.password && (
+                  <p className="mt-2 text-xs italic text-pink-500">
+                    {errors.password.message}
+                  </p>
+                )}
                 {error && (
                   <p className="mt-2 text-xs italic text-pink-500">
                     {error.message}

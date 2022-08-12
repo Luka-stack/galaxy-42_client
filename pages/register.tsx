@@ -1,33 +1,55 @@
-import { FormEvent, useMemo, useRef, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useMemo } from 'react';
 import type { NextPage } from 'next/types';
+import { useMutation } from '@apollo/client';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import {
-  emailValidation,
-  emptyValidation,
-  passwordValidation,
-} from '../utils/validations';
 import { RegisterInput, REGISTER_USER, User } from '../lib/graphql/users';
-import { useMutation } from '@apollo/client';
+import { useRecoilValue } from 'recoil';
+import { authState } from '../lib/recoil/atoms/auth-autom';
+
+type FormValues = {
+  email: string;
+  username: string;
+  password: string;
+  confirmation: string;
+};
+
+const FormSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Must be a valid email')
+    .required('Email is required'),
+  username: yup.string().required('Username is required'),
+  password: yup
+    .string()
+    .matches(
+      /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])(?=\S*[!@#$%^&*? ])\S*$/,
+      'Minimum 6 characters\nAt least 1 upper case English letter\nAt least 1 lower case English letter\nAt least 1 letter\nAt least 1 special character'
+    )
+    .required('Password is required'),
+  confirmation: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+});
 
 const Register: NextPage = () => {
   const router = useRouter();
 
-  const [emailError, setEmailError] = useState('');
-  const [usernameError, setUsernameError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({ resolver: yupResolver(FormSchema) });
 
-  const email = useRef<any>(null);
-  const username = useRef<any>(null);
-  const password = useRef<any>(null);
-  const confirmation = useRef<any>(null);
-
-  const [register, { loading, error }] = useMutation<{
+  const [registerUser, { loading, error }] = useMutation<{
     register: RegisterInput;
     user: User;
   }>(REGISTER_USER, {
@@ -42,55 +64,18 @@ const Register: NextPage = () => {
     };
   }, [error]);
 
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const onSubmit = (data: FormValues) => {
+    const { username, password, email } = data;
 
-    const emailInput: HTMLInputElement = email.current;
-    const usernameInput: HTMLInputElement = username.current;
-    const passwordInput: HTMLInputElement = password.current;
-    const confirmationInput: HTMLInputElement = confirmation.current;
-
-    let isValid = true;
-
-    if (emailInput) {
-      const error = emailValidation(emailInput.value);
-      emailInput.setCustomValidity(error);
-      setEmailError(error);
-
-      isValid = isValid && error === '';
-    }
-
-    if (usernameInput) {
-      const error = emptyValidation(usernameInput.value);
-      usernameInput.setCustomValidity(error);
-      setUsernameError(error);
-
-      isValid = isValid && error === '';
-    }
-
-    if (passwordInput) {
-      const error = passwordValidation(
-        passwordInput.value,
-        confirmationInput.value
-      );
-      passwordInput.setCustomValidity(error);
-      confirmationInput.setCustomValidity(error);
-      setPasswordError(error);
-
-      isValid = isValid && error === '';
-    }
-
-    if (isValid) {
-      register({
-        variables: {
-          user: {
-            username: usernameInput.value,
-            password: passwordInput.value,
-            email: emailInput.value,
-          },
+    registerUser({
+      variables: {
+        user: {
+          username,
+          password,
+          email,
         },
-      });
-    }
+      },
+    });
   };
 
   return (
@@ -132,17 +117,16 @@ const Register: NextPage = () => {
 
             <form
               className="flex flex-col space-y-10 w-72"
-              onSubmit={onSubmit}
+              onSubmit={handleSubmit(onSubmit)}
               noValidate
             >
               <div className="relative">
                 <input
                   id="email"
-                  name="email"
                   type="text"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-500 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 invalid:border-pink-500 focus:invalid:border-pink-500"
+                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-500 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500"
                   placeholder="placeholder"
-                  ref={email}
+                  {...register('email')}
                 />
 
                 <label
@@ -151,9 +135,11 @@ const Register: NextPage = () => {
                 >
                   Email address
                 </label>
-                <p className="hidden mt-2 text-xs italic text-pink-500 peer-invalid:block">
-                  {emailError}
-                </p>
+                {errors.email && (
+                  <p className="mt-2 text-xs italic text-pink-500">
+                    {errors.email.message}
+                  </p>
+                )}
                 {backendErrors.email && (
                   <p className="mt-2 text-xs italic text-pink-500">
                     {backendErrors.email}
@@ -163,11 +149,10 @@ const Register: NextPage = () => {
               <div className="relative">
                 <input
                   id="username"
-                  name="username"
                   type="text"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500 invalid:border-pink-500 focus:invalid:border-pink-500"
+                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
                   placeholder="placeholder"
-                  ref={username}
+                  {...register('username')}
                 />
                 <label
                   htmlFor="username"
@@ -175,9 +160,11 @@ const Register: NextPage = () => {
                 >
                   Username
                 </label>
-                <p className="hidden mt-2 text-xs italic text-pink-500 peer-invalid:block">
-                  {usernameError}
-                </p>
+                {errors.username && (
+                  <p className="mt-2 text-xs italic text-pink-500">
+                    {errors.username.message}
+                  </p>
+                )}
                 {backendErrors.username && (
                   <p className="mt-2 text-xs italic text-pink-500">
                     {backendErrors.username}
@@ -187,11 +174,10 @@ const Register: NextPage = () => {
               <div className="relative">
                 <input
                   id="password"
-                  name="password"
                   type="password"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500 invalid:border-pink-500 focus:invalid:border-pink-500"
+                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
                   placeholder="placeholder"
-                  ref={password}
+                  {...register('password')}
                 />
                 <label
                   htmlFor="password"
@@ -199,18 +185,19 @@ const Register: NextPage = () => {
                 >
                   Password
                 </label>
-                <p className="hidden mt-2 text-xs italic text-pink-500 whitespace-pre peer-invalid:block">
-                  {passwordError}
-                </p>
+                {errors.password && (
+                  <p className="mt-2 text-xs italic text-pink-500 whitespace-pre">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
               <div className="relative">
                 <input
                   id="confirmation"
-                  name="confirmation"
                   type="password"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500 invalid:border-pink-500 focus:invalid:border-pink-500"
+                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
                   placeholder="placeholder"
-                  ref={confirmation}
+                  {...register('confirmation')}
                 />
                 <label
                   htmlFor="confirmation"
@@ -218,6 +205,11 @@ const Register: NextPage = () => {
                 >
                   Password Confirmation
                 </label>
+                {errors.confirmation && (
+                  <p className="mt-2 text-xs italic text-pink-500 whitespace-pre">
+                    {errors.confirmation.message}
+                  </p>
+                )}
               </div>
 
               <input
