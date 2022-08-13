@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import type { NextPage } from 'next/types';
 
-import { Navbar } from '../components/navbar';
 import { Jumbotron } from '../components/jumbotron';
 import { LatestPlanets } from '../components/latest-planets';
 import { PlanetList } from '../components/planet-list';
@@ -9,7 +8,7 @@ import { SectionSeparator } from '../components/section-separator';
 
 const Home: NextPage = () => {
   return (
-    <div className="flex mt-10">
+    <div className="mt-10 ml-32">
       <Head>
         <title>Galaxy 42</title>
         <meta
@@ -19,9 +18,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Navbar />
-
-      <main className="w-3/4 mx-auto">
+      <main className="w-11/12 mx-auto">
         <Jumbotron />
 
         <SectionSeparator title="The latest creations" style="mt-20" />

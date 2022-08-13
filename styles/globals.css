@@ -23,6 +23,10 @@ input:-webkit-autofill:focus {
   html {
     @apply bg-bg-500 font-roboto;
   }
+
+  .gx-btn {
+    @apply px-2 py-1 rounded-md cursor-pointer text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15;
+  }
 }
 
 @layer utilities {

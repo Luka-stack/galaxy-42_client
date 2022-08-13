@@ -11,7 +11,7 @@ import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { LoginInput, LOGIN_USER, User } from '../lib/graphql/users';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { authState } from '../lib/recoil/atoms/auth-autom';
 
 type FormValues = {
@@ -160,7 +160,7 @@ const Login: NextPage = () => {
               <input
                 className="px-2 py-1 rounded-md cursor-pointer text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15"
                 type="submit"
-                value="Create Account"
+                value="Log In"
               />
             </form>
 

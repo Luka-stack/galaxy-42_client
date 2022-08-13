@@ -22,6 +22,15 @@ export interface LoginInput {
   };
 }
 
+export interface UserInput {
+  user: {
+    // username?: string;
+    // email?: string;
+    bio: string;
+    topics: string;
+  };
+}
+
 export const REGISTER_USER = gql`
   mutation register($user: RegisterInput!) {
     register(user: $user) {
@@ -33,6 +42,18 @@ export const REGISTER_USER = gql`
 export const LOGIN_USER = gql`
   query login($user: LoginInput!) {
     login(user: $user) {
+      uuid
+      username
+      email
+      bio
+      topics
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation updateUser($userId: String!, $user: UserInput!) {
+    updateUser(userId: $userId, user: $user) {
       uuid
       username
       email
