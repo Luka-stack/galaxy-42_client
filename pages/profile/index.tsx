@@ -12,7 +12,9 @@ const Profile: NextPage = () => {
 
       <main className="w-11/12 mx-auto">
         <div className="px-4 py-2 mx-auto space-x-4 border rounded-lg shadow-md shadow-gx-purple-500 w-fit border-gx-purple-500/50">
-          <button className="gx-btn">Create New Planet</button>
+          <Link href="/planets/new">
+            <button className="gx-btn">Create New Planet</button>
+          </Link>
           <Link href="/profile/edit">
             <button className="gx-btn">Edit Profile</button>
           </Link>

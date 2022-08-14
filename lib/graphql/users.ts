@@ -23,12 +23,10 @@ export interface LoginInput {
 }
 
 export interface UserInput {
-  user: {
-    // username?: string;
-    // email?: string;
-    bio: string;
-    topics: string;
-  };
+  // username?: string;
+  // email?: string;
+  bio: string;
+  topics: string;
 }
 
 export const REGISTER_USER = gql`

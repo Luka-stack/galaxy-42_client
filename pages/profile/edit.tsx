@@ -3,19 +3,16 @@ import Image from 'next/image';
 import type { NextPage } from 'next/types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@apollo/client';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import ProfileImg from '../../assets/profile.jpg';
 import { SectionSeparator } from '../../components/section-separator';
-import { useForm } from 'react-hook-form';
-import { useMemo, useRef, useState } from 'react';
-import { arrayUnique } from '../../utils/validations';
 import { Topic } from '../../components/topic';
 import { UPDATE_USER, User, UserInput } from '../../lib/graphql/users';
-import { useMutation } from '@apollo/client';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { authState } from '../../lib/recoil/atoms/auth-autom';
-
-const topicRegex = /^[A-Z0-9 ]*$/i;
+import { useTopics } from '../../hooks/use-topics';
 
 type FormValues = {
   email: string;
@@ -32,8 +29,7 @@ const EditProfile: NextPage = () => {
   const setAuthUser = useSetRecoilState(authState);
   const authUser = useRecoilValue(authState);
 
-  const topicRef = useRef<any>(null);
-  const [topics, setTopics] = useState<string[]>([]);
+  const { topics, addTopic, removeTopic, node } = useTopics();
 
   const [updateUser, { loading, error }] = useMutation<
     { updateUser: User },
@@ -60,29 +56,6 @@ const EditProfile: NextPage = () => {
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(FromSchema) });
 
-  const addTopic = (e: any) => {
-    e.preventDefault();
-    const topic: HTMLInputElement = topicRef.current;
-
-    if (topic && topic.value) {
-      if (!topicRegex.test(topic.value)) {
-        return;
-      }
-
-      const newTopics = topic.value
-        .trim()
-        .split(' ')
-        .map((topic) => topic.toLowerCase().trim());
-      setTopics(arrayUnique(topics.concat(newTopics)));
-
-      topic.value = '';
-    }
-  };
-
-  const removeTopic = (topic: string) => {
-    setTopics(topics.filter((t) => t !== topic));
-  };
-
   const onSubmit = (data: FormValues) => {
     const { username, email, bio } = data;
 
@@ -92,8 +65,6 @@ const EditProfile: NextPage = () => {
         user: {
           //   username,
           //   email,
-
-          // @ts-ignore
           bio,
           topics: topics.join(' '),
         },
@@ -192,7 +163,7 @@ const EditProfile: NextPage = () => {
               type="text"
               className="w-full h-10 font-bold border-b-2 placeholder-text-gray-400 border-slate-500 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500"
               placeholder="Provide topic or topics (separated by space)"
-              ref={topicRef}
+              ref={node}
             />
             <button
               className="h-8 px-2 py-0.5 rounded-lg text-purplish-500 bg-gx-purple-500 hover:bg-gx-purple-700 active:border-b-2 border-gx-purple-900"

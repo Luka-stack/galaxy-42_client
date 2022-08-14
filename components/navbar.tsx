@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 
 import LogoImg from '../assets/black-hole_64.png';
 import ProfileImg from '../assets/profile.jpg';
+import BGImg from '../assets/BG-Cosmo-Addons.jpg';
 import { authState } from '../lib/recoil/atoms/auth-autom';
 
 export const Navbar = () => {
@@ -12,7 +13,7 @@ export const Navbar = () => {
 
   return (
     <div className="flex flex-col items-center border-t border-gx-purple-500/20 shadow-md shadow-gx-purple-500 h-fit min-h-[20rem] w-32 justify-between p-2 rounded-r-lg fixed top-10">
-      {/* IMG BG */}
+      <Image src={BGImg} alt="" layout="fill" className="opacity-50 -z-50" />
 
       <div className="grid w-full grid-cols-1 place-items-center">
         <Link href="/">
