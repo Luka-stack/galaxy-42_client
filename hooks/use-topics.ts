@@ -18,8 +18,8 @@ export const useTopics = () => {
   const [topics, setTopics] = useState<string[]>([]);
 
   const addTopic = useCallback(
-    (event: any) => {
-      event.preventDefault();
+    (event?: any) => {
+      // event?.preventDefault();
 
       const topic = node.current;
 
@@ -46,7 +46,7 @@ export const useTopics = () => {
   );
 
   return useMemo(
-    () => ({ topics, addTopic, removeTopic, node }),
-    [topics, addTopic, removeTopic]
+    () => ({ topics, setTopics, addTopic, removeTopic, node }),
+    [topics, setTopics, addTopic, removeTopic]
   );
 };

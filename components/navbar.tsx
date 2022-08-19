@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil';
 import LogoImg from '../assets/black-hole_64.png';
 import ProfileImg from '../assets/profile.jpg';
 import BGImg from '../assets/BG-Cosmo-Addons.jpg';
-import { authState } from '../lib/recoil/atoms/auth-autom';
+import { authState } from '../lib/recoil/atoms/auth-atom';
 
 export const Navbar = () => {
   const authUser = useRecoilValue(authState);

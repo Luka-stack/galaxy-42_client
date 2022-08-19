@@ -6,15 +6,23 @@ import type { NextPage } from 'next/types';
 import CoverImg from '../../../assets/CP-Cover.jpg';
 import BGImg from '../../../assets/BG-Cosmo-Addons.jpg';
 import { SectionSeparator } from '../../../components/section-separator';
+import { useRecoilValue } from 'recoil';
+import { planetsState } from '../../../lib/recoil/atoms/planets-atom';
+import { useMemo } from 'react';
 
 const PlanetPage: NextPage = () => {
   const router = useRouter();
+  const planets = useRecoilValue(planetsState);
   const planetUuuid = router.query.uuid;
+
+  const planet = useMemo(() => {
+    return planets.find((planet) => planet.uuid === planetUuuid);
+  }, [planets, planetUuuid]);
 
   return (
     <div className="mt-10 mb-10 ml-32">
       <Head>
-        <title>React Masters | Galaxy 42</title>
+        <title>{planet!.name} | Galaxy 42</title>
       </Head>
 
       <main className="flex items-center w-4/5 mx-auto">
@@ -29,8 +37,11 @@ const PlanetPage: NextPage = () => {
           </div>
 
           <div className="relative my-10">
-            <h1 className="self-start text-5xl font-bold leading-10 text-gx-purple-500">
-              React Masters
+            <h1
+              className="self-start text-5xl font-bold leading-10 cursor-pointer text-gx-purple-500"
+              onClick={() => router.push(`${router.asPath}/edit`)}
+            >
+              {planet!.name}
             </h1>
             <button className="absolute right-0 top-1 gx-btn">
               Send Request to Join
@@ -41,29 +52,13 @@ const PlanetPage: NextPage = () => {
             <div className="w-full col-span-3">
               <section>
                 <SectionSeparator title="Bio" />
-                <p className="px-10 mt-4 text-purplish-500">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </p>
+                <p className="px-10 mt-4 text-purplish-500">{planet!.bio}</p>
               </section>
 
               <section>
                 <SectionSeparator title="Requirements" style="mt-20" />
                 <p className="px-10 mt-4 text-purplish-500">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                  {planet!.requirements}
                 </p>
               </section>
             </div>
@@ -80,12 +75,14 @@ const PlanetPage: NextPage = () => {
                 Topics
               </h3>
               <div className="flex flex-wrap gap-4 px-10 mt-4 lg:px-0 lg:items-center lg:flex-col">
-                <span className="px-3 py-1 text-sm text-blue-400 rounded-full bg-blue-900/50">
-                  ReactJs
-                </span>
-                <span className="px-3 py-1 text-sm text-blue-400 rounded-full bg-blue-900/50 max-w-[7rem] break-words">
-                  RestJs
-                </span>
+                {planet!.topics.split(' ').map((topic) => (
+                  <span
+                    key={topic}
+                    className="px-3 py-1 text-sm text-blue-400 rounded-full bg-blue-900/50 max-w-[7rem] break-words"
+                  >
+                    {topic}
+                  </span>
+                ))}
               </div>
             </section>
           </div>

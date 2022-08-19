@@ -11,7 +11,7 @@ import ProfileImg from '../../assets/profile.jpg';
 import { SectionSeparator } from '../../components/section-separator';
 import { Topic } from '../../components/topic';
 import { UPDATE_USER, User, UserInput } from '../../lib/graphql/users';
-import { authState } from '../../lib/recoil/atoms/auth-autom';
+import { authState } from '../../lib/recoil/atoms/auth-atom';
 import { useTopics } from '../../hooks/use-topics';
 
 type FormValues = {

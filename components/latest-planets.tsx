@@ -94,7 +94,7 @@ export const LatestPlanets = () => {
   }
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex justify-center w-full max-h-96">
       <Slider
         {...settings}
         className="grid w-11/12 grid-flow-col py-2 group auto-cols-max"

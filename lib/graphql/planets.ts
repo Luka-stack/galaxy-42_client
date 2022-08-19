@@ -17,6 +17,13 @@ export interface PlanetInput {
   isPublic: boolean;
 }
 
+export interface UpdatePlanetInput {
+  bio: string;
+  requirements: string;
+  topics: string;
+  isPublic: boolean;
+}
+
 export const ALL_PLANETS = gql`
   query getPlanets {
     planets {
@@ -24,6 +31,8 @@ export const ALL_PLANETS = gql`
       name
       bio
       topics
+      requirements
+      isPublic
     }
   }
 `;
@@ -31,6 +40,19 @@ export const ALL_PLANETS = gql`
 export const CREATE_PLANET = gql`
   mutation createPlanet($userId: String!, $planet: PlanetInput!) {
     createPlanet(userId: $userId, planet: $planet) {
+      uuid
+      name
+      bio
+      requirements
+      topics
+      isPublic
+    }
+  }
+`;
+
+export const UPDATE_PLANET = gql`
+  mutation updatePlanet($planetUuid: String!, $planet: UpdatePlanetInput!) {
+    updatePlanet(planetUuid: $planetUuid, planet: $planet) {
       uuid
       name
       bio

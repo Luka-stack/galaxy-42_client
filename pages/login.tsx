@@ -12,7 +12,7 @@ import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { LoginInput, LOGIN_USER, User } from '../lib/graphql/users';
 import { useSetRecoilState } from 'recoil';
-import { authState } from '../lib/recoil/atoms/auth-autom';
+import { authState } from '../lib/recoil/atoms/auth-atom';
 
 type FormValues = {
   email: string;
