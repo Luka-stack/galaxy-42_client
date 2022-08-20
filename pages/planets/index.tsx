@@ -10,6 +10,7 @@ import { Planet } from '../../lib/graphql/planets';
 import { SelectionDropdown } from '../../components/selection-dropdown';
 import { orderPlanets } from '../../utils/sorting';
 import { SectionSeparator } from '../../components/section-separator';
+import { useRouter } from 'next/router';
 
 const sortingOptions = [
   {
@@ -38,6 +39,8 @@ const orderOptions = [
 ];
 
 const PlanetsPage: NextPage = () => {
+  const router = useRouter();
+
   const planets = useRecoilValue(planetsState);
 
   const searchRef = useRef<HTMLInputElement | null>(null);
@@ -73,6 +76,11 @@ const PlanetsPage: NextPage = () => {
       orderPlanets(filteredPlanets, sortingOption.id, orderOption.id)
     );
   };
+
+  useEffect(() => {
+    const input = searchRef.current;
+    if (input) input.value = router.query.search as string;
+  }, []);
 
   useEffect(() => {
     search();

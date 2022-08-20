@@ -72,7 +72,6 @@ const PlanetPage: NextPage = () => {
               </section>
             </div>
 
-            {/* <section className="relative lg:h-fit lg:w-40 lg:shadow-md lg:shadow-gx-purple-500 lg:border lg:border-gx-purple-500/20 lg:p-2 rounded-2xl lg:justify-self-end"> */}
             <section className="relative overflow-hidden lg:h-fit lg:w-40 lg:border-2 lg:border-gx-purple-500/60 lg:p-2 rounded-2xl lg:justify-self-end">
               <Image
                 src={BGImg}
@@ -84,11 +83,17 @@ const PlanetPage: NextPage = () => {
               <h3 className="hidden text-lg font-bold text-center lg:block text-gx-purple-500">
                 Topics
               </h3>
-              <div className="flex flex-wrap gap-4 px-10 mt-4 lg:px-0 lg:items-center lg:flex-col">
+              <div className="z-10 flex flex-wrap gap-4 px-10 mt-4 lg:px-0 lg:items-center lg:flex-col">
                 {planet!.topics.split(' ').map((topic) => (
                   <span
                     key={topic}
-                    className="px-3 py-1 text-sm text-blue-400 rounded-full bg-blue-900/50 max-w-[7rem] break-words"
+                    className="px-3 py-1 text-sm text-blue-400 rounded-full bg-blue-900/50 max-w-[7rem] break-words cursor-pointer z-10"
+                    onClick={() =>
+                      router.push({
+                        pathname: '/planets',
+                        query: { search: topic },
+                      })
+                    }
                   >
                     {topic}
                   </span>
