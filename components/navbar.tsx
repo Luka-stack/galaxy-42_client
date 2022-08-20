@@ -7,15 +7,18 @@ import LogoImg from '../assets/black-hole_64.png';
 import ProfileImg from '../assets/profile.jpg';
 import BGImg from '../assets/BG-Cosmo-Addons.jpg';
 import { authState } from '../lib/recoil/atoms/auth-atom';
+import classNames from 'classnames';
+import { useRouter } from 'next/router';
 
 export const Navbar = () => {
   const authUser = useRecoilValue(authState);
+  const router = useRouter();
 
   return (
     <div className="flex flex-col items-center border-t border-gx-purple-500/20 shadow-md shadow-gx-purple-500 h-fit min-h-[20rem] w-32 justify-between p-2 rounded-r-lg fixed top-10">
       <Image src={BGImg} alt="" layout="fill" className="opacity-50 -z-50" />
 
-      <div className="grid w-full grid-cols-1 place-items-center">
+      <div className="z-10 grid w-full grid-cols-1 place-items-center">
         <Link href="/">
           <div className="relative w-16 h-16 cursor-pointer mb-7 hover:scale-110 active:scale-125">
             <Image src={LogoImg} alt="logo" layout="fill" />
@@ -35,13 +38,20 @@ export const Navbar = () => {
           </Link>
         )}
 
-        <div className="mb-4 font-medium cursor-pointer text-gx-purple-500 hover:text-purple-neon-500">
-          <GlobeIcon className="h-10 mx-auto stroke-1" />
-          Planets
-        </div>
+        <Link href="/planets">
+          <div
+            className={classNames(
+              'mb-4 font-medium cursor-pointer text-gx-purple-500 hover:text-purple-neon-500',
+              { 'text-purple-neon-500': router.pathname === '/planets' }
+            )}
+          >
+            <GlobeIcon className="h-10 mx-auto stroke-1" />
+            Planets
+          </div>
+        </Link>
       </div>
 
-      <div className="grid w-full grid-cols-1 mt-4 place-items-center gap-y-3">
+      <div className="z-10 grid w-full grid-cols-1 mt-4 place-items-center gap-y-3">
         {authUser ? (
           <button className="w-24 px-2 py-1 uppercase rounded-md text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15">
             Log out

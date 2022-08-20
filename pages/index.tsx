@@ -1,12 +1,24 @@
+import { useQuery } from '@apollo/client';
 import Head from 'next/head';
 import type { NextPage } from 'next/types';
+import { useSetRecoilState } from 'recoil';
 
 import { Jumbotron } from '../components/jumbotron';
 import { LatestPlanets } from '../components/latest-planets';
 import { PlanetList } from '../components/planet-list';
 import { SectionSeparator } from '../components/section-separator';
+import { ALL_PLANETS } from '../lib/graphql/planets';
+import { planetsState } from '../lib/recoil/atoms/planets-atom';
 
 const Home: NextPage = () => {
+  const setPlanets = useSetRecoilState(planetsState);
+
+  const { loading, data } = useQuery(ALL_PLANETS, {
+    onCompleted: ({ planets }) => {
+      setPlanets(planets);
+    },
+  });
+
   return (
     <div className="mt-10 ml-32">
       <Head>
@@ -26,7 +38,7 @@ const Home: NextPage = () => {
 
         {/* Section Wrapper */}
         <SectionSeparator title="Explore different planets" style="mt-20" />
-        <PlanetList />
+        <PlanetList loading={loading} planets={data?.planets} />
       </main>
     </div>
   );
