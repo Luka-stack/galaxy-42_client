@@ -1,18 +1,21 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import { useMemo } from 'react';
 import { useRouter } from 'next/router';
+import { useRecoilValue } from 'recoil';
 import type { NextPage } from 'next/types';
 
 import CoverImg from '../../../assets/CP-Cover.jpg';
 import BGImg from '../../../assets/BG-Cosmo-Addons.jpg';
 import { SectionSeparator } from '../../../components/section-separator';
-import { useRecoilValue } from 'recoil';
 import { planetsState } from '../../../lib/recoil/atoms/planets-atom';
-import { useMemo } from 'react';
+import { authState } from '../../../lib/recoil/atoms/auth-atom';
 
 const PlanetPage: NextPage = () => {
   const router = useRouter();
   const planets = useRecoilValue(planetsState);
+  const user = useRecoilValue(authState);
+
   const planetUuuid = router.query.uuid;
 
   const planet = useMemo(() => {
@@ -37,15 +40,21 @@ const PlanetPage: NextPage = () => {
           </div>
 
           <div className="relative my-10">
-            <h1
-              className="self-start text-5xl font-bold leading-10 cursor-pointer text-gx-purple-500"
-              onClick={() => router.push(`${router.asPath}/edit`)}
-            >
+            <h1 className="self-start text-5xl font-bold leading-10 cursor-pointer text-gx-purple-500">
               {planet!.name}
             </h1>
-            <button className="absolute right-0 top-1 gx-btn">
-              Send Request to Join
-            </button>
+            {user ? (
+              <button
+                className="absolute right-0 top-1 gx-btn"
+                onClick={() => router.push(`${router.asPath}/edit`)}
+              >
+                Edit Planet
+              </button>
+            ) : (
+              <button className="absolute right-0 top-1 gx-btn">
+                Send Request to Join
+              </button>
+            )}
           </div>
 
           <div className="relative grid grid-cols-1 mt-10 lg:grid-cols-4">
@@ -63,7 +72,8 @@ const PlanetPage: NextPage = () => {
               </section>
             </div>
 
-            <section className="relative lg:h-fit lg:w-40 lg:shadow-md lg:shadow-gx-purple-500 lg:border lg:border-gx-purple-500/20 lg:p-2 rounded-2xl lg:justify-self-end">
+            {/* <section className="relative lg:h-fit lg:w-40 lg:shadow-md lg:shadow-gx-purple-500 lg:border lg:border-gx-purple-500/20 lg:p-2 rounded-2xl lg:justify-self-end"> */}
+            <section className="relative overflow-hidden lg:h-fit lg:w-40 lg:border-2 lg:border-gx-purple-500/60 lg:p-2 rounded-2xl lg:justify-self-end">
               <Image
                 src={BGImg}
                 alt=""

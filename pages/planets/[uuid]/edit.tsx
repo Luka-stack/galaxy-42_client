@@ -32,21 +32,28 @@ const EditPlanet: NextPage = () => {
     { planetUuid: String; planet: UpdatePlanetInput }
   >(UPDATE_PLANET, {
     update: (_cache, { data }) => router.push('/profile'),
-    onError: (err) => console.log(err.message),
+    onError: (err) => console.log(err),
   });
 
   useEffect(() => {
     if (variables) {
+      const { bio, requirements, isPublic, topics } = variables;
+
       updatePlanet({
         variables: {
           planetUuid: planet!.uuid,
-          planet: variables,
+          planet: {
+            bio,
+            requirements,
+            topics,
+            isPublic,
+          },
         },
       });
 
       setVariables(null);
     }
-  }, [variables, updatePlanet]);
+  }, [variables]);
 
   return (
     <div className="my-10 ml-32">

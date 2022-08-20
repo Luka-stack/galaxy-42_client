@@ -12,7 +12,7 @@ interface Props {
   setSelectable: (item: Selectable) => void;
 }
 
-export const Dropdown = ({
+export const SelectionDropdown = ({
   title,
   selectables,
   selected,

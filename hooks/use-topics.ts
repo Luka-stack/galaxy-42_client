@@ -18,8 +18,8 @@ export const useTopics = () => {
   const [topics, setTopics] = useState<string[]>([]);
 
   const addTopic = useCallback(
-    (event?: any) => {
-      // event?.preventDefault();
+    (event: any) => {
+      event.preventDefault();
 
       const topic = node.current;
 

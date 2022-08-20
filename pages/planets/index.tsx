@@ -1,16 +1,15 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import type { NextPage } from 'next/types';
-import { ArrowSmUpIcon, SearchIcon } from '@heroicons/react/outline';
+import { SearchIcon } from '@heroicons/react/outline';
 
-import CosmoBg from '../../assets/BG-Cosmo-Section.png';
 import { PlanetList } from '../../components/planet-list';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { planetsState } from '../../lib/recoil/atoms/planets-atom';
 import { Planet } from '../../lib/graphql/planets';
-import { Dropdown } from '../../components/dropdown';
+import { SelectionDropdown } from '../../components/selection-dropdown';
 import { orderPlanets } from '../../utils/sorting';
+import { SectionSeparator } from '../../components/section-separator';
 
 const sortingOptions = [
   {
@@ -54,8 +53,6 @@ const PlanetsPage: NextPage = () => {
   };
 
   const search = () => {
-    console.log('search');
-
     const input = searchRef.current;
 
     if (!input) {
@@ -78,7 +75,6 @@ const PlanetsPage: NextPage = () => {
   };
 
   useEffect(() => {
-    console.log('useEffect');
     search();
   }, [sortingOption, orderOption]);
 
@@ -103,35 +99,20 @@ const PlanetsPage: NextPage = () => {
           />
         </section>
 
-        <section className="relative flex items-center justify-between w-full h-12 px-4 mt-20 rounded-full ">
-          <Image
-            src={CosmoBg}
-            alt="separator"
-            layout="fill"
-            className="absolute rounded-full opacity-40 -z-50"
+        <SectionSeparator title="Results" style="mt-20 px-4 justify-between">
+          <SelectionDropdown
+            title="Sort by"
+            selectables={sortingOptions}
+            selected={sortingOption}
+            setSelectable={setSortingOption}
           />
-
-          <h1 className="text-2xl font-bold text-gx-purple-500">Results</h1>
-
-          <div className="z-10 flex space-x-5">
-            <Dropdown
-              title="Sort by"
-              selectables={sortingOptions}
-              selected={sortingOption}
-              setSelectable={setSortingOption}
-            />
-            <Dropdown
-              title="Order"
-              selectables={orderOptions}
-              selected={orderOption}
-              setSelectable={setOrderOption}
-            />
-            {/* <div className="flex items-center px-3 py-1 rounded-full bg-bg-500 text-gx-purple-500">
-              Order: DESC
-              <ArrowSmUpIcon className="w-5 ml-1 stroke-2 text-gx-purple-500" />
-            </div> */}
-          </div>
-        </section>
+          <SelectionDropdown
+            title="Order"
+            selectables={orderOptions}
+            selected={orderOption}
+            setSelectable={setOrderOption}
+          />
+        </SectionSeparator>
 
         <PlanetList planets={planetsList} loading={false} />
       </main>

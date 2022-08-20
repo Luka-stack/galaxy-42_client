@@ -36,7 +36,7 @@ const NewPlanet: NextPage = () => {
 
       setVariables(null);
     }
-  }, [variables, createPlanet]);
+  }, [variables]);
 
   return (
     <div className="my-10 ml-32">

@@ -33,11 +33,14 @@ const Home: NextPage = () => {
       <main className="w-11/12 mx-auto">
         <Jumbotron />
 
-        <SectionSeparator title="The latest creations" style="mt-20" />
+        <SectionSeparator title="The latest creations" style="mt-20 pl-4" />
         <LatestPlanets />
 
         {/* Section Wrapper */}
-        <SectionSeparator title="Explore different planets" style="mt-20" />
+        <SectionSeparator
+          title="Explore different planets"
+          style="mt-20 pl-4"
+        />
         <PlanetList loading={loading} planets={data?.planets} />
       </main>
     </div>

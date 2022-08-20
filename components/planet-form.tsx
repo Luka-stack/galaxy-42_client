@@ -230,7 +230,7 @@ export const PlanetForm = ({ planet, setVariables, loading, error }: Props) => {
 
       <input
         type="submit"
-        value="Create Planet"
+        value="Save Planet"
         className="w-3/5 mt-20 gx-btn active:border-b-2 border-gx-purple-500"
       />
     </form>

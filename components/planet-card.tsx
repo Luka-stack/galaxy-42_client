@@ -36,7 +36,7 @@ export const PlanetCard = ({ planet }: Props) => {
         </span>
         <p className="mt-2 text-purplish-500">{planet.bio}</p>
 
-        <div className="flex flex-wrap mt-3 space-x-2">
+        <div className="flex flex-wrap gap-2 mt-3">
           {planet.topics.split(' ').map((topic: string) => (
             <span
               key={topic}
