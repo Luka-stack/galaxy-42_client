@@ -40,7 +40,7 @@ const PlanetPage: NextPage = () => {
           </div>
 
           <div className="relative my-10">
-            <h1 className="self-start text-5xl font-bold leading-10 cursor-pointer text-gx-purple-500">
+            <h1 className="self-start text-5xl font-bold leading-10 text-gx-purple-500">
               {planet!.name}
             </h1>
             {user ? (

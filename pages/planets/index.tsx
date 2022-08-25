@@ -79,7 +79,7 @@ const PlanetsPage: NextPage = () => {
 
   useEffect(() => {
     const input = searchRef.current;
-    if (input) input.value = router.query.search as string;
+    if (input) input.value = (router.query.search as string) || '';
   }, []);
 
   useEffect(() => {

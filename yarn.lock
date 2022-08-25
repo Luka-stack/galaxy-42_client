@@ -2080,6 +2080,11 @@ tailwindcss@^3.1.7:
     quick-lru "^5.1.1"
     resolve "^1.22.1"
 
+text-clipper@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/text-clipper/-/text-clipper-2.2.0.tgz#4b81a4d01ffcc51096ceab84b26856f88643990a"
+  integrity sha512-tfHW2GUfXLGto6gx9JB3CFL9qgX8+SbX6db0oM1kqkbPsemAX5whdXf4da6r1V/7lij34J1oOODj+0j3crl0UA==
+
 text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.npmjs.org/text-table/-/text-table-0.2.0.tgz"

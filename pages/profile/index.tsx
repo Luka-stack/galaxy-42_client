@@ -1,9 +1,14 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import type { NextPage } from 'next/types';
+import { useRecoilValue } from 'recoil';
+import { PlanetHorCard } from '../../components/planet-hor-card';
 import { SectionSeparator } from '../../components/section-separator';
+import { planetsState } from '../../lib/recoil/atoms/planets-atom';
 
 const Profile: NextPage = () => {
+  const planets = useRecoilValue(planetsState);
+
   return (
     <div className="mt-10 ml-32">
       <Head>
@@ -21,17 +26,31 @@ const Profile: NextPage = () => {
           <button className="gx-btn">Change Password</button>
         </div>
 
-        <section className="grid grid-cols-2 gap-14">
+        <section className="grid grid-cols-2 mx-auto max-w-screen-2xl gap-14 lg:gap-40">
           <article>
             <SectionSeparator title="Planets you belong to" style="mt-20" />
+            <div className="mt-5 divide-y divide-gx-purple-500/50">
+              {planets.slice(0, 2).map((planet) => (
+                <PlanetHorCard
+                  planet={planets[0]}
+                  showBio={false}
+                  key={planet.uuid}
+                />
+              ))}
+            </div>
           </article>
           <article>
             <SectionSeparator title="Planets you own" style="mt-20" />
+            <div className="mt-5 divide-y divide-gx-purple-500/50">
+              {planets.slice(0, 2).map((planet) => (
+                <PlanetHorCard
+                  planet={planets[0]}
+                  showBio={false}
+                  key={planet.uuid}
+                />
+              ))}
+            </div>
           </article>
-        </section>
-
-        <section>
-          <SectionSeparator title="The latest creations" style="mt-20" />
         </section>
       </main>
     </div>
