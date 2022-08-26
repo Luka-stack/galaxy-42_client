@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useRecoilValue } from 'recoil';
 import type { NextPage } from 'next/types';
@@ -10,23 +10,32 @@ import BGImg from '../../../assets/BG-Cosmo-Addons.jpg';
 import { SectionSeparator } from '../../../components/section-separator';
 import { planetsState } from '../../../lib/recoil/atoms/planets-atom';
 import { authState } from '../../../lib/recoil/atoms/auth-atom';
+import { RequestModal } from '../../../components/modals/request-modal';
 
 const PlanetPage: NextPage = () => {
   const router = useRouter();
+  const planetUuuid = router.query.uuid;
+
   const planets = useRecoilValue(planetsState);
   const user = useRecoilValue(authState);
-
-  const planetUuuid = router.query.uuid;
 
   const planet = useMemo(() => {
     return planets.find((planet) => planet.uuid === planetUuuid);
   }, [planets, planetUuuid]);
+
+  const [openModal, setOpenModal] = useState(false);
 
   return (
     <div className="mt-10 mb-10 ml-32">
       <Head>
         <title>{planet!.name} | Galaxy 42</title>
       </Head>
+
+      <RequestModal
+        open={openModal}
+        setOpen={setOpenModal}
+        setContent={() => {}}
+      />
 
       <main className="flex items-center w-4/5 mx-auto">
         <div className="flex flex-col">
@@ -51,7 +60,10 @@ const PlanetPage: NextPage = () => {
                 Edit Planet
               </button>
             ) : (
-              <button className="absolute right-0 top-1 gx-btn">
+              <button
+                className="absolute right-0 top-1 gx-btn"
+                onClick={() => setOpenModal(true)}
+              >
                 Send Request to Join
               </button>
             )}

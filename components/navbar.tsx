@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { GlobeIcon } from '@heroicons/react/outline';
+import { BellIcon, GlobeIcon } from '@heroicons/react/outline';
 import { useRecoilValue } from 'recoil';
 
 import LogoImg from '../assets/black-hole_64.png';
@@ -26,16 +26,31 @@ export const Navbar = () => {
         </Link>
 
         {authUser && (
-          <Link href="/profile">
-            <div className="relative w-10 h-10 mb-4 border border-purple-500 rounded-full shadow-md cursor-pointer hover:scale-110 active:scale-125 shadow-gx-purple-500">
-              <Image
-                src={ProfileImg}
-                alt="profile"
-                layout="fill"
-                className="rounded-full"
-              />
-            </div>
-          </Link>
+          <>
+            <Link href="/profile">
+              <div className="relative w-10 h-10 mb-4 border border-purple-500 rounded-full shadow-md cursor-pointer hover:scale-110 active:scale-125 shadow-gx-purple-500">
+                <Image
+                  src={ProfileImg}
+                  alt="profile"
+                  layout="fill"
+                  className="rounded-full"
+                />
+              </div>
+            </Link>
+            <Link href="/profile/notifications">
+              <div
+                className={classNames(
+                  'mb-4 font-medium cursor-pointer text-gx-purple-500 hover:text-purple-neon-500',
+                  {
+                    'text-purple-neon-500':
+                      router.pathname === '/profile/notifications',
+                  }
+                )}
+              >
+                <BellIcon className="h-10 mx-auto stroke-1" />
+              </div>
+            </Link>
+          </>
         )}
 
         <Link href="/planets">
@@ -46,7 +61,6 @@ export const Navbar = () => {
             )}
           >
             <GlobeIcon className="h-10 mx-auto stroke-1" />
-            Planets
           </div>
         </Link>
       </div>
