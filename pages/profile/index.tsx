@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import type { NextPage } from 'next/types';
 import { useRecoilValue } from 'recoil';
-import { PlanetHorCard } from '../../components/planet-hor-card';
+import { PlanetCard } from '../../components/planet-card';
 import { SectionSeparator } from '../../components/section-separator';
 import { planetsState } from '../../lib/recoil/atoms/planets-atom';
 
@@ -23,7 +23,9 @@ const Profile: NextPage = () => {
           <Link href="/profile/edit">
             <button className="gx-btn">Edit Profile</button>
           </Link>
-          <button className="gx-btn">Change Password</button>
+          <Link href="/profile/change-password">
+            <button className="gx-btn">Change Password</button>
+          </Link>
         </div>
 
         <section className="grid grid-cols-2 mx-auto max-w-screen-2xl gap-14 lg:gap-40">
@@ -31,7 +33,7 @@ const Profile: NextPage = () => {
             <SectionSeparator title="Planets you belong to" style="mt-20" />
             <div className="mt-5 divide-y divide-gx-purple-500/50">
               {planets.slice(0, 2).map((planet) => (
-                <PlanetHorCard
+                <PlanetCard
                   planet={planets[0]}
                   showBio={false}
                   key={planet.uuid}
@@ -43,7 +45,7 @@ const Profile: NextPage = () => {
             <SectionSeparator title="Planets you own" style="mt-20" />
             <div className="mt-5 divide-y divide-gx-purple-500/50">
               {planets.slice(0, 2).map((planet) => (
-                <PlanetHorCard
+                <PlanetCard
                   planet={planets[0]}
                   showBio={false}
                   key={planet.uuid}

@@ -27,6 +27,8 @@ const NewPlanet: NextPage = () => {
 
   useEffect(() => {
     if (variables) {
+      console.log('Inside If in UseEffect');
+
       createPlanet({
         variables: {
           userId: authUser!.uuid,

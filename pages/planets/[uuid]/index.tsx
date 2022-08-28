@@ -8,9 +8,14 @@ import type { NextPage } from 'next/types';
 import CoverImg from '../../../assets/CP-Cover.jpg';
 import BGImg from '../../../assets/BG-Cosmo-Addons.jpg';
 import { SectionSeparator } from '../../../components/section-separator';
-import { planetsState } from '../../../lib/recoil/atoms/planets-atom';
-import { authState } from '../../../lib/recoil/atoms/auth-atom';
 import { RequestModal } from '../../../components/modals/request-modal';
+import {
+  CREATE_REQUEST,
+  Request,
+  RequestInput,
+} from '../../../lib/graphql/requests';
+import { useMutation } from '@apollo/client';
+import { authState, planetsState } from '../../../lib/recoil/atoms';
 
 const PlanetPage: NextPage = () => {
   const router = useRouter();
@@ -25,6 +30,35 @@ const PlanetPage: NextPage = () => {
 
   const [openModal, setOpenModal] = useState(false);
 
+  const sendRequest = (content: string) => {
+    if (!user || !planet) {
+      return;
+    }
+
+    createRequest({
+      variables: {
+        userUuid: user!.uuid,
+        request: {
+          planetUuid: planet!.uuid,
+          content,
+        },
+      },
+    });
+  };
+
+  const [createRequest, { loading, error }] = useMutation<
+    {
+      createRequest: Request;
+    },
+    {
+      userUuid: String;
+      request: RequestInput;
+    }
+  >(CREATE_REQUEST, {
+    update: (_cache, { data }) => console.log(data),
+    onError: (err) => console.log(err),
+  });
+
   return (
     <div className="mt-10 mb-10 ml-32">
       <Head>
@@ -34,7 +68,7 @@ const PlanetPage: NextPage = () => {
       <RequestModal
         open={openModal}
         setOpen={setOpenModal}
-        setContent={() => {}}
+        setContent={sendRequest}
       />
 
       <main className="flex items-center w-4/5 mx-auto">
@@ -52,21 +86,21 @@ const PlanetPage: NextPage = () => {
             <h1 className="self-start text-5xl font-bold leading-10 text-gx-purple-500">
               {planet!.name}
             </h1>
-            {user ? (
+            {/* {user ? (
               <button
                 className="absolute right-0 top-1 gx-btn"
                 onClick={() => router.push(`${router.asPath}/edit`)}
               >
                 Edit Planet
               </button>
-            ) : (
-              <button
-                className="absolute right-0 top-1 gx-btn"
-                onClick={() => setOpenModal(true)}
-              >
-                Send Request to Join
-              </button>
-            )}
+            ) : ( */}
+            <button
+              className="absolute right-0 top-1 gx-btn"
+              onClick={() => setOpenModal(true)}
+            >
+              Send Request to Join
+            </button>
+            {/* )} */}
           </div>
 
           <div className="relative grid grid-cols-1 mt-10 lg:grid-cols-4">

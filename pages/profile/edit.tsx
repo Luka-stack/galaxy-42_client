@@ -73,7 +73,7 @@ const EditProfile: NextPage = () => {
   };
 
   return (
-    <div className="mt-10 mb-10 ml-32">
+    <div className="my-10 ml-32">
       <Head>
         <title>Takacchi | Galaxy 42</title>
       </Head>

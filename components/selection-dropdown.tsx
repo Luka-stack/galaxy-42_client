@@ -49,7 +49,7 @@ export const SelectionDropdown = ({
     >
       {`${title}: ${selected.label}`}
       {show && (
-        <div className="absolute w-full mt-2 overflow-hidden text-right rounded-lg bg-bg-500">
+        <div className="absolute w-full mt-2 overflow-hidden text-right border rounded-lg bg-bg-500 border-gx-purple-500/50">
           {selectables.map((option) => (
             <p
               key={option.id}

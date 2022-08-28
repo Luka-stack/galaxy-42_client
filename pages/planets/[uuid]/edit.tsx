@@ -12,7 +12,7 @@ import {
   UpdatePlanetInput,
   UPDATE_PLANET,
 } from '../../../lib/graphql/planets';
-import { planetsState } from '../../../lib/recoil/atoms/planets-atom';
+import { planetsState } from '../../../lib/recoil/atoms';
 
 const EditPlanet: NextPage = () => {
   const router = useRouter();

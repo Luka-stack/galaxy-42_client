@@ -12,8 +12,6 @@ import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { RegisterInput, REGISTER_USER, User } from '../lib/graphql/users';
-import { useRecoilValue } from 'recoil';
-import { authState } from '../lib/recoil/atoms/auth-atom';
 
 type FormValues = {
   email: string;
@@ -88,7 +86,7 @@ const Register: NextPage = () => {
       <Image src={BgImage} alt="bg" layout="fill" className="opacity-75" />
       {/* Image Logo */}
 
-      <div className="relative flex flex-col items-center w-1/2 p-4 mx-auto my-auto rounded-md shadow-md h-fit bg-bg-500 shadow-gx-purple-500 min-h-[30rem]">
+      <main className="relative flex flex-col items-center w-1/2 p-4 mx-auto my-auto rounded-md shadow-md h-fit bg-bg-500 shadow-gx-purple-500 min-h-[30rem]">
         {loading ? (
           <div className="flex h-20 my-auto space-x-5">
             <div className="flex items-center justify-center space-x-2 loading-ball-one animate-bounce">
@@ -136,12 +134,12 @@ const Register: NextPage = () => {
                   Email address
                 </label>
                 {errors.email && (
-                  <p className="mt-2 text-xs italic text-pink-500">
+                  <p className="mt-2 text-xs text-pink-500">
                     {errors.email.message}
                   </p>
                 )}
                 {backendErrors.email && (
-                  <p className="mt-2 text-xs italic text-pink-500">
+                  <p className="mt-2 text-xs text-pink-500">
                     {backendErrors.email}
                   </p>
                 )}
@@ -161,12 +159,12 @@ const Register: NextPage = () => {
                   Username
                 </label>
                 {errors.username && (
-                  <p className="mt-2 text-xs italic text-pink-500">
+                  <p className="mt-2 text-xs text-pink-500">
                     {errors.username.message}
                   </p>
                 )}
                 {backendErrors.username && (
-                  <p className="mt-2 text-xs italic text-pink-500">
+                  <p className="mt-2 text-xs text-pink-500">
                     {backendErrors.username}
                   </p>
                 )}
@@ -186,7 +184,7 @@ const Register: NextPage = () => {
                   Password
                 </label>
                 {errors.password && (
-                  <p className="mt-2 text-xs italic text-pink-500 whitespace-pre">
+                  <p className="mt-2 text-xs text-pink-500 whitespace-pre">
                     {errors.password.message}
                   </p>
                 )}
@@ -206,7 +204,7 @@ const Register: NextPage = () => {
                   Password Confirmation
                 </label>
                 {errors.confirmation && (
-                  <p className="mt-2 text-xs italic text-pink-500 whitespace-pre">
+                  <p className="mt-2 text-xs text-pink-500 whitespace-pre">
                     {errors.confirmation.message}
                   </p>
                 )}
@@ -229,7 +227,7 @@ const Register: NextPage = () => {
             </p>
           </>
         )}
-      </div>
+      </main>
     </div>
   );
 };

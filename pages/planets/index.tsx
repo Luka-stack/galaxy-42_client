@@ -2,7 +2,6 @@ import Head from 'next/head';
 import type { NextPage } from 'next/types';
 import { SearchIcon } from '@heroicons/react/outline';
 
-import { PlanetList } from '../../components/planet-list';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { planetsState } from '../../lib/recoil/atoms/planets-atom';
@@ -11,6 +10,7 @@ import { SelectionDropdown } from '../../components/selection-dropdown';
 import { orderPlanets } from '../../utils/sorting';
 import { SectionSeparator } from '../../components/section-separator';
 import { useRouter } from 'next/router';
+import { PlanetCard } from '../../components/planet-card';
 
 const sortingOptions = [
   {
@@ -63,11 +63,11 @@ const PlanetsPage: NextPage = () => {
     }
 
     const filteredPlanets = planets.filter((planet) => {
-      if (planet.name.includes(input.value)) {
+      if (planet.name.toLowerCase().includes(input.value.toLocaleLowerCase())) {
         return true;
       }
 
-      if (planet.topics.includes(input.value)) {
+      if (planet.topics.toLowerCase().includes(input.value.toLowerCase())) {
         return true;
       }
     });
@@ -107,7 +107,10 @@ const PlanetsPage: NextPage = () => {
           />
         </section>
 
-        <SectionSeparator title="Results" style="mt-20 px-4 justify-between">
+        <SectionSeparator
+          title="Search result"
+          style="mt-20 px-4 justify-between"
+        >
           <SelectionDropdown
             title="Sort by"
             selectables={sortingOptions}
@@ -122,7 +125,11 @@ const PlanetsPage: NextPage = () => {
           />
         </SectionSeparator>
 
-        <PlanetList planets={planetsList} loading={false} />
+        <div className="grid grid-cols-1 w-[80%] mx-auto divide-y divide-gx-purple-500">
+          {planetsList.map((planet: Planet) => (
+            <PlanetCard planet={planet} showBio={true} key={planet.uuid} />
+          ))}
+        </div>
       </main>
     </div>
   );
