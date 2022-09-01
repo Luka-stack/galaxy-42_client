@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { ApolloError } from '@apollo/client';
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline';
 
 import CoverImg from '../assets/CP-Cover.jpg';
@@ -39,7 +39,12 @@ const FormSchema = yup.object().shape({
 });
 
 export const PlanetForm = ({ planet, setVariables, loading, error }: Props) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isPublic, setIsPublic] = useState(true);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const bannerRef = useRef<HTMLImageElement>(null);
+
   const {
     topics,
     setTopics,
@@ -55,6 +60,22 @@ export const PlanetForm = ({ planet, setVariables, loading, error }: Props) => {
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(FormSchema) });
 
+  const openFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.name = 'image';
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files![0];
+
+    if (file && bannerRef.current) {
+      bannerRef.current.src = URL.createObjectURL(file);
+      setSelectedFile(file);
+    }
+  };
+
   const onSubmit = (data: FormValues) => {
     if (!topics.length) return;
 
@@ -66,6 +87,7 @@ export const PlanetForm = ({ planet, setVariables, loading, error }: Props) => {
       requirements,
       isPublic,
       topics: topics.join(' '),
+      image: selectedFile,
     });
   };
 
@@ -87,12 +109,22 @@ export const PlanetForm = ({ planet, setVariables, loading, error }: Props) => {
       className="flex flex-col items-center w-full"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="relative w-3/5 border rounded-lg shadow-md h-60 border-gx-purple-500 shadow-purple-neon-500">
-        <Image
-          src={CoverImg}
-          alt="Planet Img"
-          layout="fill"
-          className="rounded-lg"
+      <input
+        type="file"
+        hidden={true}
+        ref={fileInputRef}
+        onChange={handleFileInput}
+      />
+
+      <div
+        className="relative w-4/5 border rounded-lg shadow-md cursor-pointer h-80 border-gx-purple-500 shadow-purple-neon-500"
+        onClick={openFileInput}
+      >
+        <img
+          ref={bannerRef}
+          src={planet ? planet.imageUrl : ''}
+          alt="Click to set up image"
+          className="w-full h-full rounded-lg"
         />
       </div>
 

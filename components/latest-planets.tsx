@@ -20,6 +20,7 @@ export const LatestPlanets = () => {
           key={planet.uuid}
           index={id}
           name={planet.name}
+          image={planet.imageUrl}
           onClick={() => router.push(`/planets/${planet.uuid}`)}
         />
       ))}

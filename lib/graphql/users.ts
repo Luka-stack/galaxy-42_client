@@ -6,6 +6,7 @@ export interface User {
   email: string;
   bio: string;
   topics: string;
+  imageUrl: string;
   planets: any;
 }
 
@@ -23,10 +24,11 @@ export interface LoginInput {
 }
 
 export interface UserInput {
-  // username?: string;
-  // email?: string;
+  username: string;
+  email: string;
   bio: string;
   topics: string;
+  image: File | null;
 }
 
 export const REGISTER_USER = gql`
@@ -45,6 +47,7 @@ export const LOGIN_USER = gql`
       email
       bio
       topics
+      imageUrl
     }
   }
 `;
@@ -57,6 +60,7 @@ export const UPDATE_USER = gql`
       email
       bio
       topics
+      imageUrl
     }
   }
 `;

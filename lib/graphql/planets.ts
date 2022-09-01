@@ -6,6 +6,7 @@ export interface Planet {
   bio: string;
   requirements: string;
   topics: string;
+  imageUrl: string;
   isPublic: boolean;
 }
 
@@ -15,6 +16,7 @@ export interface PlanetInput {
   topics: string;
   requirements: string;
   isPublic: boolean;
+  image: File | null;
 }
 
 export interface UpdatePlanetInput {
@@ -22,6 +24,7 @@ export interface UpdatePlanetInput {
   requirements: string;
   topics: string;
   isPublic: boolean;
+  image: File | null;
 }
 
 export const ALL_PLANETS = gql`
@@ -32,6 +35,7 @@ export const ALL_PLANETS = gql`
       bio
       topics
       requirements
+      imageUrl
       isPublic
     }
   }
@@ -45,6 +49,7 @@ export const CREATE_PLANET = gql`
       bio
       requirements
       topics
+      imageUrl
       isPublic
     }
   }
@@ -58,6 +63,7 @@ export const UPDATE_PLANET = gql`
       bio
       requirements
       topics
+      imageUrl
       isPublic
     }
   }

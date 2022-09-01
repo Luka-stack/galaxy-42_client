@@ -39,7 +39,7 @@ export const PlanetCard = ({ planet, showBio }: Props) => {
             { '!w-28 !h-28': !showBio }
           )}
         >
-          <Image src={Placeholder} layout="fill" alt="" />
+          <Image src={planet!.imageUrl} layout="fill" alt="" />
         </div>
       </div>
       <div className="flex flex-wrap gap-2 mt-5">

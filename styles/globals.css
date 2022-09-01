@@ -27,6 +27,16 @@ input:-webkit-autofill:focus {
   .gx-btn {
     @apply px-2 py-1 rounded-md cursor-pointer text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15;
   }
+
+  img {
+    position: relative;
+  }
+
+  img[alt]:after {
+    @apply absolute inset-0 block text-center text-white border-none outline-none bg-gx-purple-700;
+
+    content: attr(alt);
+  }
 }
 
 @layer utilities {

@@ -30,7 +30,7 @@ export const Navbar = () => {
             <Link href="/profile">
               <div className="relative w-10 h-10 mb-4 border border-purple-500 rounded-full shadow-md cursor-pointer hover:scale-110 active:scale-125 shadow-gx-purple-500">
                 <Image
-                  src={ProfileImg}
+                  src={authUser.imageUrl}
                   alt="profile"
                   layout="fill"
                   className="rounded-full"

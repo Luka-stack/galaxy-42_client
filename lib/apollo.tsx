@@ -5,6 +5,7 @@ import { IncomingMessage } from 'http';
 import { GetServerSidePropsContext } from 'next';
 import {
   ApolloClient,
+  ApolloLink,
   HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
@@ -13,6 +14,8 @@ import { setContext } from '@apollo/client/link/context';
 
 import type { AppProps } from 'next/app';
 import { useMemo } from 'react';
+// import { createUploadLink } from 'apollo-upload-client';
+import createUploadLink from 'apollo-upload-client/public/createUploadLink.js';
 
 export const APOLLO_STATE_PROPERTY_NAME = '__APOLLOT_STATE__';
 export const COKKIES_TOKEN_NAME = 'jwt';
@@ -44,9 +47,17 @@ const createApolloClient = (ctx?: GetServerSidePropsContext) => {
     };
   });
 
+  const uploadLink = createUploadLink({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_URI,
+    credentials: 'same-origin',
+  });
+
+  const links = ApolloLink.from([authLink, uploadLink]);
+
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: authLink.concat(httpLink),
+    // link: links,
+    link: authLink.concat(uploadLink),
     cache: new InMemoryCache(),
   });
 };

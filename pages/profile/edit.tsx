@@ -1,18 +1,17 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import type { NextPage } from 'next/types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { ChangeEvent, useMemo, useRef, useState } from 'react';
 
-import ProfileImg from '../../assets/profile.jpg';
 import { SectionSeparator } from '../../components/section-separator';
 import { Topic } from '../../components/topic';
 import { UPDATE_USER, User, UserInput } from '../../lib/graphql/users';
-import { authState } from '../../lib/recoil/atoms/auth-atom';
 import { useTopics } from '../../hooks/use-topics';
+import { authState } from '../../lib/recoil/atoms';
 
 type FormValues = {
   email: string;
@@ -29,11 +28,21 @@ const EditProfile: NextPage = () => {
   const setAuthUser = useSetRecoilState(authState);
   const authUser = useRecoilValue(authState);
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const profileImageRef = useRef<HTMLImageElement>(null);
+
   const { topics, addTopic, removeTopic, node } = useTopics();
 
   const [updateUser, { loading, error }] = useMutation<
-    { updateUser: User },
-    { userId: String; user: UserInput }
+    {
+      updateUser: User;
+    },
+    {
+      userId: String;
+      user: UserInput;
+    }
   >(UPDATE_USER, {
     update: (_cache, { data }) => {
       if (data) {
@@ -43,18 +52,34 @@ const EditProfile: NextPage = () => {
     onError: (_) => {},
   });
 
-  //   const backendErrors = useMemo(() => {
-  //     return {
-  //       email: error?.graphQLErrors[0].extensions.email as String | null,
-  //       username: error?.graphQLErrors[0].extensions.username as String | null,
-  //     };
-  //   }, [error]);
+  const backendErrors = useMemo(() => {
+    return {
+      email: error?.graphQLErrors[0].extensions.email as String | null,
+      username: error?.graphQLErrors[0].extensions.username as String | null,
+    };
+  }, [error]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(FromSchema) });
+
+  const openFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.name = 'image';
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files![0];
+
+    if (file && profileImageRef.current) {
+      profileImageRef.current.src = URL.createObjectURL(file);
+      setSelectedFile(file);
+    }
+  };
 
   const onSubmit = (data: FormValues) => {
     const { username, email, bio } = data;
@@ -63,10 +88,11 @@ const EditProfile: NextPage = () => {
       variables: {
         userId: authUser!.uuid,
         user: {
-          //   username,
-          //   email,
+          username,
+          email,
           bio,
           topics: topics.join(' '),
+          image: selectedFile,
         },
       },
     });
@@ -82,12 +108,22 @@ const EditProfile: NextPage = () => {
         className="flex flex-col items-center w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="relative w-48 h-48 border rounded-full shadow-md border-gx-purple-500 shadow-purple-neon-500">
-          <Image
-            src={ProfileImg}
+        <input
+          type="file"
+          hidden={true}
+          ref={fileInputRef}
+          onChange={handleFileInput}
+        />
+
+        <div
+          className="relative w-48 h-48 border rounded-full shadow-md cursor-pointer border-gx-purple-500 shadow-purple-neon-500"
+          onClick={openFileInput}
+        >
+          <img
+            src={authUser!.imageUrl}
             alt="Profile Image"
-            layout="fill"
-            className="rounded-full"
+            className="w-full h-full rounded-full"
+            ref={profileImageRef}
           />
         </div>
 
@@ -111,11 +147,11 @@ const EditProfile: NextPage = () => {
               {errors.username.message}
             </p>
           )}
-          {/* {backendErrors.username && (
+          {backendErrors.username && (
             <p className="mt-2 text-xs italic text-pink-500">
               {backendErrors.username}
             </p>
-          )} */}
+          )}
         </div>
 
         <div className="relative mt-10 w-72">
@@ -138,11 +174,11 @@ const EditProfile: NextPage = () => {
               {errors.email.message}
             </p>
           )}
-          {/* {backendErrors.email && (
+          {backendErrors.email && (
             <p className="mt-2 text-xs italic text-pink-500">
               {backendErrors.email}
             </p>
-          )} */}
+          )}
         </div>
 
         <section className="w-3/5">

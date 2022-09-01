@@ -75,7 +75,7 @@ const PlanetPage: NextPage = () => {
         <div className="flex flex-col">
           <div className="relative w-full border rounded-lg shadow-md h-80 border-gx-purple-500 shadow-purple-neon-500">
             <Image
-              src={CoverImg}
+              src={planet!.imageUrl}
               alt="Planet Img"
               layout="fill"
               className="rounded-lg"
@@ -86,21 +86,20 @@ const PlanetPage: NextPage = () => {
             <h1 className="self-start text-5xl font-bold leading-10 text-gx-purple-500">
               {planet!.name}
             </h1>
-            {/* {user ? (
+            {user && (
               <button
                 className="absolute right-0 top-1 gx-btn"
                 onClick={() => router.push(`${router.asPath}/edit`)}
               >
                 Edit Planet
               </button>
-            ) : ( */}
-            <button
+            )}
+            {/* <button
               className="absolute right-0 top-1 gx-btn"
               onClick={() => setOpenModal(true)}
             >
               Send Request to Join
-            </button>
-            {/* )} */}
+            </button> */}
           </div>
 
           <div className="relative grid grid-cols-1 mt-10 lg:grid-cols-4">

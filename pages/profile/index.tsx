@@ -4,7 +4,7 @@ import type { NextPage } from 'next/types';
 import { useRecoilValue } from 'recoil';
 import { PlanetCard } from '../../components/planet-card';
 import { SectionSeparator } from '../../components/section-separator';
-import { planetsState } from '../../lib/recoil/atoms/planets-atom';
+import { planetsState } from '../../lib/recoil/atoms';
 
 const Profile: NextPage = () => {
   const planets = useRecoilValue(planetsState);

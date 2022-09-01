@@ -5,9 +5,9 @@ import { useRecoilValue } from 'recoil';
 import { useEffect, useState } from 'react';
 import type { NextPage } from 'next/types';
 
-import { authState } from '../../lib/recoil/atoms/auth-atom';
 import { CREATE_PLANET, Planet, PlanetInput } from '../../lib/graphql/planets';
 import { PlanetForm } from '../../components/planet-form';
+import { authState } from '../../lib/recoil/atoms';
 
 const NewPlanet: NextPage = () => {
   const router = useRouter();
@@ -27,8 +27,6 @@ const NewPlanet: NextPage = () => {
 
   useEffect(() => {
     if (variables) {
-      console.log('Inside If in UseEffect');
-
       createPlanet({
         variables: {
           userId: authUser!.uuid,

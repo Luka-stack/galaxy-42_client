@@ -37,7 +37,7 @@ const EditPlanet: NextPage = () => {
 
   useEffect(() => {
     if (variables) {
-      const { bio, requirements, isPublic, topics } = variables;
+      const { bio, requirements, isPublic, topics, image } = variables;
 
       updatePlanet({
         variables: {
@@ -47,6 +47,7 @@ const EditPlanet: NextPage = () => {
             requirements,
             topics,
             isPublic,
+            image: image || null,
           },
         },
       });
