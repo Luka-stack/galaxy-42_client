@@ -13,15 +13,19 @@ const NewPlanet: NextPage = () => {
   const router = useRouter();
   const authUser = useRecoilValue(authState);
 
+  if (!authUser) {
+    router.push('/');
+  }
+
   const [variables, setVariables] = useState<PlanetInput | null>(null);
 
   const [createPlanet, { loading, error }] = useMutation<
     {
       createPlanet: Planet;
     },
-    { userId: String; planet: PlanetInput }
+    { planet: PlanetInput }
   >(CREATE_PLANET, {
-    update: (_cache, { data }) => router.push('/profile'),
+    update: (_cache, { data }) => router.back(),
     onError: (err) => console.log(err.message),
   });
 
@@ -29,7 +33,6 @@ const NewPlanet: NextPage = () => {
     if (variables) {
       createPlanet({
         variables: {
-          userId: authUser!.uuid,
           planet: variables,
         },
       });

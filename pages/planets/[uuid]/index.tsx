@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { useRecoilValue } from 'recoil';
 import type { NextPage } from 'next/types';
 
-import CoverImg from '../../../assets/CP-Cover.jpg';
 import BGImg from '../../../assets/BG-Cosmo-Addons.jpg';
 import { SectionSeparator } from '../../../components/section-separator';
 import { RequestModal } from '../../../components/modals/request-modal';
@@ -28,6 +27,14 @@ const PlanetPage: NextPage = () => {
     return planets.find((planet) => planet.uuid === planetUuuid);
   }, [planets, planetUuuid]);
 
+  const planetRelation = useMemo(() => {
+    if (!user) return 'ANON';
+
+    const foundPlanet = user.planets.find((p) => p.planet.uuid === planetUuuid);
+    return foundPlanet ? foundPlanet.role : 'NO_CONNECTION';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planet, user]);
+
   const [openModal, setOpenModal] = useState(false);
 
   const sendRequest = (content: string) => {
@@ -37,7 +44,6 @@ const PlanetPage: NextPage = () => {
 
     createRequest({
       variables: {
-        userUuid: user!.uuid,
         request: {
           planetUuid: planet!.uuid,
           content,
@@ -51,13 +57,36 @@ const PlanetPage: NextPage = () => {
       createRequest: Request;
     },
     {
-      userUuid: String;
       request: RequestInput;
     }
   >(CREATE_REQUEST, {
     update: (_cache, { data }) => console.log(data),
     onError: (err) => console.log(err),
   });
+
+  const generateButton = () => {
+    if (planetRelation === 'ADMIN') {
+      return (
+        <button
+          className="absolute right-0 top-1 gx-btn"
+          onClick={() => router.push(`${router.asPath}/edit`)}
+        >
+          Edit Planet
+        </button>
+      );
+    }
+
+    if (planetRelation === 'NO_CONNECTION') {
+      return (
+        <button
+          className="absolute right-0 top-1 gx-btn"
+          onClick={() => setOpenModal(true)}
+        >
+          Send Request to Join
+        </button>
+      );
+    }
+  };
 
   return (
     <div className="mt-10 mb-10 ml-32">
@@ -86,20 +115,7 @@ const PlanetPage: NextPage = () => {
             <h1 className="self-start text-5xl font-bold leading-10 text-gx-purple-500">
               {planet!.name}
             </h1>
-            {user && (
-              <button
-                className="absolute right-0 top-1 gx-btn"
-                onClick={() => router.push(`${router.asPath}/edit`)}
-              >
-                Edit Planet
-              </button>
-            )}
-            {/* <button
-              className="absolute right-0 top-1 gx-btn"
-              onClick={() => setOpenModal(true)}
-            >
-              Send Request to Join
-            </button> */}
+            {generateButton()}
           </div>
 
           <div className="relative grid grid-cols-1 mt-10 lg:grid-cols-4">

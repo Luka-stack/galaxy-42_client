@@ -42,8 +42,8 @@ export const ALL_PLANETS = gql`
 `;
 
 export const CREATE_PLANET = gql`
-  mutation createPlanet($userId: String!, $planet: PlanetInput!) {
-    createPlanet(userId: $userId, planet: $planet) {
+  mutation createPlanet($planet: PlanetInput!) {
+    createPlanet(planet: $planet) {
       uuid
       name
       bio

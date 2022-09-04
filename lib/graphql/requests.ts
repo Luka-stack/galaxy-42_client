@@ -15,8 +15,8 @@ export interface RequestInput {
 }
 
 export const CREATE_REQUEST = gql`
-  mutation createRequest($userUuid: String!, $request: RequestInput!) {
-    createRequest(userUuid: $userUuid, request: $request) {
+  mutation createRequest($request: RequestInput!) {
+    createRequest(request: $request) {
       uuid
     }
   }

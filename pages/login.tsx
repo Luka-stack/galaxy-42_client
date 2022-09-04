@@ -5,13 +5,13 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import type { NextPage } from 'next/types';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { LoginInput, LOGIN_USER, User } from '../lib/graphql/users';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { authState } from '../lib/recoil/atoms';
 
 type FormValues = {
@@ -30,7 +30,11 @@ const FormSchema = yup.object().shape({
 const Login: NextPage = () => {
   const router = useRouter();
 
-  const setAuthUser = useSetRecoilState(authState);
+  const [authUser, setAuthUser] = useRecoilState(authState);
+
+  if (authUser) {
+    router.push('/');
+  }
 
   const {
     register,
@@ -38,23 +42,22 @@ const Login: NextPage = () => {
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(FormSchema) });
 
-  const [login, { loading, error }] = useLazyQuery<{ login: User }, LoginInput>(
-    LOGIN_USER,
-    {
-      onCompleted: ({ login }) => {
-        setAuthUser(login);
-        router.push('/');
-      },
-      onError: (_) => {},
-    }
-  );
+  const [login, { loading, error }] = useLazyQuery(LOGIN_USER, {
+    onCompleted: ({ login }) => {
+      setAuthUser(login);
+      router.back();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   const onSubmit = (data: FormValues) => {
     const { email, password } = data;
 
     login({
       variables: {
-        user: {
+        login: {
           email,
           password,
         },

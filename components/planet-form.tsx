@@ -30,7 +30,7 @@ const FormSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
   bio: yup
     .string()
-    .min(50, 'Has to be at least 50 characters')
+    .min(20, 'Has to be at least 50 characters')
     .required('Bio is required'),
   requirements: yup
     .string()

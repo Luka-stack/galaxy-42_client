@@ -4,10 +4,11 @@ import 'slick-carousel/slick/slick-theme.css';
 
 import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
-import { useApollo } from '../lib/apollo';
 import { RecoilRoot } from 'recoil';
 import { Navbar } from '../components/navbar';
 import { useRouter } from 'next/router';
+import { useApollo } from '../lib/apollo';
+import { AuthProvider } from '../components/auth-provider';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
@@ -18,8 +19,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={apolloClient}>
       <RecoilRoot>
-        {!authRoute && <Navbar />}
-        <Component {...pageProps} />
+        <AuthProvider>
+          {!authRoute && <Navbar />}
+          <Component {...pageProps} />
+        </AuthProvider>
       </RecoilRoot>
     </ApolloProvider>
   );

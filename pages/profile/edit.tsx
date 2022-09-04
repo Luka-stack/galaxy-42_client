@@ -4,8 +4,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { ChangeEvent, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import { SectionSeparator } from '../../components/section-separator';
 import { Topic } from '../../components/topic';
@@ -25,8 +26,12 @@ const FromSchema = yup.object().shape({
 });
 
 const EditProfile: NextPage = () => {
-  const setAuthUser = useSetRecoilState(authState);
-  const authUser = useRecoilValue(authState);
+  const router = useRouter();
+  const [authUser, setAuthUser] = useRecoilState(authState);
+
+  if (!authUser) {
+    router.push('/');
+  }
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -40,8 +45,7 @@ const EditProfile: NextPage = () => {
       updateUser: User;
     },
     {
-      userId: String;
-      user: UserInput;
+      userInput: UserInput;
     }
   >(UPDATE_USER, {
     update: (_cache, { data }) => {
@@ -86,8 +90,7 @@ const EditProfile: NextPage = () => {
 
     updateUser({
       variables: {
-        userId: authUser!.uuid,
-        user: {
+        userInput: {
           username,
           email,
           bio,
@@ -101,7 +104,7 @@ const EditProfile: NextPage = () => {
   return (
     <div className="my-10 ml-32">
       <Head>
-        <title>Takacchi | Galaxy 42</title>
+        <title>{authUser?.username || 'Edit Profile'} | Galaxy 42</title>
       </Head>
 
       <form
@@ -120,7 +123,7 @@ const EditProfile: NextPage = () => {
           onClick={openFileInput}
         >
           <img
-            src={authUser!.imageUrl}
+            src={authUser?.imageUrl}
             alt="Profile Image"
             className="w-full h-full rounded-full"
             ref={profileImageRef}

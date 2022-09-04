@@ -1,82 +1,92 @@
-import cookie from 'cookie';
-import merge from 'deepmerge';
-import isEqual from 'lodash.isequal';
-import { IncomingMessage } from 'http';
-import { GetServerSidePropsContext } from 'next';
 import {
   ApolloClient,
-  ApolloLink,
-  HttpLink,
-  InMemoryCache,
   NormalizedCacheObject,
+  ApolloLink,
+  InMemoryCache,
 } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-
-import type { AppProps } from 'next/app';
+import { createUploadLink } from 'apollo-upload-client';
+import { IncomingHttpHeaders } from 'http';
+import isEqual from 'lodash.isequal';
+import { AppProps } from 'next/app';
 import { useMemo } from 'react';
-// import { createUploadLink } from 'apollo-upload-client';
-import createUploadLink from 'apollo-upload-client/public/createUploadLink.js';
+import merge from 'deepmerge';
+import { onError } from 'apollo-link-error';
 
-export const APOLLO_STATE_PROPERTY_NAME = '__APOLLOT_STATE__';
-export const COKKIES_TOKEN_NAME = 'jwt';
+const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
-const getToken = (req?: IncomingMessage) => {
-  const parsedCookie = cookie.parse(
-    req ? req.headers.cookie ?? '' : document.cookie
-  );
+let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
-  return parsedCookie[COKKIES_TOKEN_NAME];
-};
-
-let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
-
-const createApolloClient = (ctx?: GetServerSidePropsContext) => {
-  const httpLink = new HttpLink({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URI,
-    credentials: 'same-origin',
-  });
-
-  const authLink = setContext((_, { headers }) => {
-    const token = getToken(ctx?.req);
-
-    return {
+const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
+  const enhancedFetch = (url: RequestInfo, init: RequestInit) => {
+    return fetch(url, {
+      ...init,
       headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : '',
+        ...init.headers,
+        'Access-Control-Allow-Origin': '*',
+        Cookie: headers?.cookie ?? '',
       },
-    };
-  });
+    }).then((response) => response);
+  };
 
-  const uploadLink = createUploadLink({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URI,
-    credentials: 'same-origin',
+  const link = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+      graphQLErrors.forEach(({ message, locations, path }) =>
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+        )
+      );
+    if (networkError) console.log(`[Network error]: ${networkError}`);
   });
-
-  const links = ApolloLink.from([authLink, uploadLink]);
 
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    // link: links,
-    link: authLink.concat(uploadLink),
-    cache: new InMemoryCache(),
+    link: ApolloLink.from([
+      // @ts-ignore
+      link,
+      // this uses apollo-link-http under the hood, so all the options here come from that package
+      createUploadLink({
+        uri:
+          process.env.NEXT_PUBLIC_GRAPHQL_URI ||
+          'http://localhost:3000/api/graphql',
+        fetchOptions: {
+          mode: 'cors',
+        },
+        credentials: 'include',
+        fetch: enhancedFetch,
+      }),
+    ]),
+    cache: new InMemoryCache({
+      possibleTypes: {
+        authenticatedItem: ['User'],
+      },
+    }),
   });
 };
 
-export function initialApolloState(
-  initialState: any = null,
-  ctx?: GetServerSidePropsContext
-) {
-  const client = apolloClient ?? createApolloClient(ctx);
+type InitialState = NormalizedCacheObject | undefined;
 
-  // If your page has Next.js data fetching methods that use Apollo Client,
-  // the initial state gets hydrated here
+interface IInitializeApollo {
+  headers?: IncomingHttpHeaders | null;
+  initialState?: InitialState | null;
+}
+
+export const initializeApollo = (
+  { headers, initialState }: IInitializeApollo = {
+    headers: null,
+    initialState: null,
+  }
+) => {
+  const _apolloClient = apolloClient ?? createApolloClient(headers);
+
+  // If your page has Next.js data fetching methods that use Apollo Client, the initial state
+  // get hydrated here
   if (initialState) {
     // Get existing cache, loaded during client side data fetching
-    const existingCache = client.extract();
+    const existingCache = _apolloClient.extract();
 
     // Merge the existing cache into data passed from getStaticProps/getServerSideProps
     const data = merge(initialState, existingCache, {
-      // combine arrays using object equality
+      // combine arrays using object equality (like in sets)
       arrayMerge: (destinationArray, sourceArray) => [
         ...sourceArray,
         ...destinationArray.filter((d) =>
@@ -86,36 +96,33 @@ export function initialApolloState(
     });
 
     // Restore the cache with the merged data
-    client.cache.restore(data);
+    _apolloClient.cache.restore(data);
   }
 
-  // For SSGG and SSR always create a new Apollo Client
-  if (typeof window === 'undefined') {
-    return client;
-  }
-
+  // For SSG and SSR always create a new Apollo Client
+  if (typeof window === 'undefined') return _apolloClient;
   // Create the Apollo Client once in the client
-  if (!apolloClient) {
-    apolloClient = client;
-  }
+  if (!apolloClient) apolloClient = _apolloClient;
 
-  return client;
-}
+  return _apolloClient;
+};
 
-export function addApolloState(
+export const addApolloState = (
   client: ApolloClient<NormalizedCacheObject>,
   pageProps: AppProps['pageProps']
-) {
+) => {
   if (pageProps?.props) {
-    pageProps.props[APOLLO_STATE_PROPERTY_NAME] = client.cache.extract();
+    pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
   }
 
   return pageProps;
-}
+};
 
 export function useApollo(pageProps: AppProps['pageProps']) {
-  const state = pageProps[APOLLO_STATE_PROPERTY_NAME];
-  const store = useMemo(() => initialApolloState(state), [state]);
-
+  const state = pageProps[APOLLO_STATE_PROP_NAME];
+  const store = useMemo(
+    () => initializeApollo({ initialState: state }),
+    [state]
+  );
   return store;
 }

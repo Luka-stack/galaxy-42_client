@@ -12,6 +12,8 @@ import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { RegisterInput, REGISTER_USER, User } from '../lib/graphql/users';
+import { useRecoilValue } from 'recoil';
+import { authState } from '../lib/recoil/atoms';
 
 type FormValues = {
   email: string;
@@ -40,6 +42,12 @@ const FormSchema = yup.object().shape({
 
 const Register: NextPage = () => {
   const router = useRouter();
+
+  const authUser = useRecoilValue(authState);
+
+  if (authUser) {
+    router.push('/');
+  }
 
   const {
     register,

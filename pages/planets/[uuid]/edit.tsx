@@ -12,18 +12,28 @@ import {
   UpdatePlanetInput,
   UPDATE_PLANET,
 } from '../../../lib/graphql/planets';
-import { planetsState } from '../../../lib/recoil/atoms';
+import { authState, planetsState } from '../../../lib/recoil/atoms';
 
 const EditPlanet: NextPage = () => {
   const router = useRouter();
   const planets = useRecoilValue(planetsState);
+  const authUser = useRecoilValue(authState);
   const planetUuuid = router.query.uuid;
 
-  const [variables, setVariables] = useState<PlanetInput | null>(null);
+  if (
+    !authUser ||
+    !authUser.planets.some(
+      (p) => p.planet.uuid === planetUuuid && p.role === 'ADMIN'
+    )
+  ) {
+    router.push('/');
+  }
 
   const planet = useMemo(() => {
     return planets.find((planet) => planet.uuid === planetUuuid);
   }, [planets, planetUuuid]);
+
+  const [variables, setVariables] = useState<PlanetInput | null>(null);
 
   const [updatePlanet, { loading, error }] = useMutation<
     {
@@ -31,7 +41,7 @@ const EditPlanet: NextPage = () => {
     },
     { planetUuid: String; planet: UpdatePlanetInput }
   >(UPDATE_PLANET, {
-    update: (_cache, { data }) => router.push('/profile'),
+    update: (_cache, { data }) => router.back(),
     onError: (err) => console.log(err),
   });
 
@@ -54,12 +64,13 @@ const EditPlanet: NextPage = () => {
 
       setVariables(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variables]);
 
   return (
     <div className="my-10 ml-32">
       <Head>
-        <title>{planet!.name} | Galaxy 42</title>
+        <title>{planet?.name || 'Edit Planet'} | Galaxy 42</title>
       </Head>
 
       <PlanetForm

@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { Planet } from './planets';
 
 export interface User {
   uuid: string;
@@ -7,7 +8,10 @@ export interface User {
   bio: string;
   topics: string;
   imageUrl: string;
-  planets: any;
+  planets: {
+    role: 'ADMIN' | 'USER';
+    planet: Planet;
+  }[];
 }
 
 export interface RegisterInput {
@@ -17,10 +21,8 @@ export interface RegisterInput {
 }
 
 export interface LoginInput {
-  user: {
-    email: string;
-    password: string;
-  };
+  email: string;
+  password: string;
 }
 
 export interface UserInput {
@@ -40,27 +42,58 @@ export const REGISTER_USER = gql`
 `;
 
 export const LOGIN_USER = gql`
-  query login($user: LoginInput!) {
-    login(user: $user) {
+  query login($login: LoginInput!) {
+    login(login: $login) {
       uuid
       username
       email
       bio
       topics
       imageUrl
+      planets {
+        role
+        planet {
+          uuid
+        }
+      }
     }
   }
 `;
 
 export const UPDATE_USER = gql`
-  mutation updateUser($userId: String!, $user: UserInput!) {
-    updateUser(userId: $userId, user: $user) {
+  mutation updateUser($userInput: UserInput!) {
+    updateUser(userInput: $userInput) {
       uuid
       username
       email
       bio
       topics
       imageUrl
+      planets {
+        role
+        planet {
+          uuid
+        }
+      }
+    }
+  }
+`;
+
+export const ME = gql`
+  query me {
+    me {
+      uuid
+      username
+      email
+      bio
+      topics
+      imageUrl
+      planets {
+        role
+        planet {
+          uuid
+        }
+      }
     }
   }
 `;

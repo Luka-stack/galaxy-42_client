@@ -4,7 +4,6 @@ import { BellIcon, GlobeIcon } from '@heroicons/react/outline';
 import { useRecoilValue } from 'recoil';
 
 import LogoImg from '../assets/black-hole_64.png';
-import ProfileImg from '../assets/profile.jpg';
 import BGImg from '../assets/BG-Cosmo-Addons.jpg';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
