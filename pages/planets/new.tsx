@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import type { NextPage } from 'next/types';
 
 import { CREATE_PLANET, Planet, PlanetInput } from '../../lib/graphql/planets';
-import { PlanetForm } from '../../components/planet-form';
+import { PlanetForm } from '../../components/planets/planet-form';
 import { authState } from '../../lib/recoil/atoms';
 
 const NewPlanet: NextPage = () => {

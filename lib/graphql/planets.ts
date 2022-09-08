@@ -41,6 +41,20 @@ export const ALL_PLANETS = gql`
   }
 `;
 
+export const GET_PLANET = gql`
+  query getPlanet($planetUuid: String!) {
+    getPlanet(planetUuid: $planetUuid) {
+      uuid
+      name
+      bio
+      topics
+      requirements
+      imageUrl
+      isPublic
+    }
+  }
+`;
+
 export const CREATE_PLANET = gql`
   mutation createPlanet($planet: PlanetInput!) {
     createPlanet(planet: $planet) {

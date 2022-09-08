@@ -5,7 +5,7 @@ import type { NextPage } from 'next/types';
 import { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { PlanetForm } from '../../../components/planet-form';
+import { PlanetForm } from '../../../components/planets/planet-form';
 import {
   Planet,
   PlanetInput,

@@ -8,10 +8,10 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline';
 
 import CoverImg from '../assets/CP-Cover.jpg';
-import { Topic } from './topic';
-import { Planet, PlanetInput } from '../lib/graphql/planets';
-import { useTopics } from '../hooks/use-topics';
-import { SectionSeparator } from './section-separator';
+import { Topic } from '../topic';
+import { Planet, PlanetInput } from '../../lib/graphql/planets';
+import { useTopics } from '../../hooks/use-topics';
+import { SectionSeparator } from '../section-separator';
 
 interface Props {
   planet?: Planet;

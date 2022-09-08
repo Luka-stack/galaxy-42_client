@@ -9,7 +9,7 @@ import { SelectionDropdown } from '../../components/selection-dropdown';
 import { orderPlanets } from '../../utils/sorting';
 import { SectionSeparator } from '../../components/section-separator';
 import { useRouter } from 'next/router';
-import { PlanetCard } from '../../components/planet-card';
+import { PlanetCard } from '../../components/planets/planet-card';
 import { planetsState } from '../../lib/recoil/atoms';
 
 const sortingOptions = [

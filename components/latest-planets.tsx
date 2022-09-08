@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { ALL_PLANETS, Planet } from '../lib/graphql/planets';
 
 import { useRouter } from 'next/router';
-import { PlanetLeaflet } from './planet-leaflet';
+import { PlanetLeaflet } from './planets/planet-leaflet';
 
 export const LatestPlanets = () => {
   const router = useRouter();

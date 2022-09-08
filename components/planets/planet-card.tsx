@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Planet } from '../lib/graphql/planets';
+import { Planet } from '../../lib/graphql/planets';
 
-import Placeholder from '../assets/placeholder-1.png';
 import clip from 'text-clipper';
 import classNames from 'classnames';
 

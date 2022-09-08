@@ -5,7 +5,7 @@ import type { NextPage } from 'next/types';
 
 import ProfileImg from '../../assets/profile.jpg';
 import { useState } from 'react';
-import { PlanetCard } from '../../components/planet-card';
+import { PlanetCard } from '../../components/planets/planet-card';
 import { Tabs } from '../../components/tabs';
 import { UserPreview } from '../../components/user-preview';
 

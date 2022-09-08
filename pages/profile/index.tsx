@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import type { NextPage } from 'next/types';
 import { useRecoilValue } from 'recoil';
-import { PlanetCard } from '../../components/planet-card';
+import { PlanetCard } from '../../components/planets/planet-card';
 import { SectionSeparator } from '../../components/section-separator';
 import { planetsState } from '../../lib/recoil/atoms';
 
