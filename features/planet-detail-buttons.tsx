@@ -1,27 +1,24 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useMemo, useState } from 'react';
 
 import { RequestModal } from '../components/modals/request-modal';
 import { CREATE_REQUEST, RequestInput } from '../lib/graphql/requests';
 import { User } from '../lib/graphql/users';
-import { authState } from '../lib/recoil/atoms';
 
 interface PageProps {
   uuid: string;
-  user?: User;
+  user: User;
 }
 
-const doesPlanetBelonsToUser = (planetUuid: string, user: User) => {
-  const foundPlanet = user.planets.find((p) => p.planet.uuid === planetUuid);
-  return foundPlanet ? foundPlanet.role : 'NO_CONNECTION';
-};
-
-export const PlanetDetailButtons = ({ uuid }: PageProps) => {
+export const PlanetDetailButtons = ({ uuid, user }: PageProps) => {
   const router = useRouter();
-  const user = useRecoilValue(authState);
   const [openModal, setOpenModal] = useState(false);
+
+  const planetRelation = useMemo(() => {
+    const foundPlanet = user.planets.find((p) => p.planet.uuid === uuid);
+    return foundPlanet ? foundPlanet.role : 'NO_CONNECTION';
+  }, [uuid, user]);
 
   const sendRequest = (content: string) => {
     createRequest({
@@ -49,7 +46,7 @@ export const PlanetDetailButtons = ({ uuid }: PageProps) => {
   // TODO add loading
   // TODO add error
 
-  if (!user) {
+  if (planetRelation === 'USER') {
     return null;
   }
 
@@ -61,7 +58,7 @@ export const PlanetDetailButtons = ({ uuid }: PageProps) => {
         setContent={sendRequest}
       />
 
-      {doesPlanetBelonsToUser(uuid!, user) ? (
+      {planetRelation === 'ADMIN' ? (
         <button
           className="absolute right-0 top-1 gx-btn"
           onClick={() => router.push(`${router.asPath}/edit`)}

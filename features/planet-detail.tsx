@@ -1,14 +1,17 @@
 import { useQuery } from '@apollo/client';
 import Image from 'next/image';
 
-import BGImg from '../../../assets/BG-Cosmo-Addons.jpg';
+import BGImg from '../assets/BG-Cosmo-Addons.jpg';
 import { GET_PLANET, Planet } from '../lib/graphql/planets';
 import { SectionSeparator } from '../components/section-separator';
 import { useRouter } from 'next/router';
 import { PlanetDetailButtons } from './planet-detail-buttons';
+import { useRecoilValue } from 'recoil';
+import { authState } from '../lib/recoil/atoms';
 
 export const PlanetDetail = ({ uuid }: { uuid: string }) => {
   const router = useRouter();
+  const user = useRecoilValue(authState);
 
   const { data, loading, error } = useQuery<
     { getPlanet: Planet },
@@ -42,7 +45,7 @@ export const PlanetDetail = ({ uuid }: { uuid: string }) => {
           <h1 className="self-start text-5xl font-bold leading-10 text-gx-purple-500">
             {data.getPlanet.name}
           </h1>
-          <PlanetDetailButtons uuid={uuid} />
+          {user && <PlanetDetailButtons uuid={uuid} user={user} />}
         </div>
 
         <div className="relative grid grid-cols-1 mt-10 lg:grid-cols-4">

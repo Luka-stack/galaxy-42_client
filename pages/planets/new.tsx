@@ -14,7 +14,7 @@ const NewPlanet: NextPage = () => {
   const authUser = useRecoilValue(authState);
 
   if (!authUser) {
-    router.push('/');
+    router.push('/login');
   }
 
   const [variables, setVariables] = useState<PlanetInput | null>(null);
@@ -25,7 +25,8 @@ const NewPlanet: NextPage = () => {
     },
     { planet: PlanetInput }
   >(CREATE_PLANET, {
-    update: (_cache, { data }) => router.back(),
+    update: (_cache, { data }) =>
+      router.push(`/planets/${data?.createPlanet.uuid}`),
     onError: (err) => console.log(err.message),
   });
 

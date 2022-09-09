@@ -55,6 +55,20 @@ export const GET_PLANET = gql`
   }
 `;
 
+export const GET_PLANET_AUTH = gql`
+  query getPlanetAuth($planetUuid: String!) {
+    getPlanetAuth(planetUuid: $planetUuid) {
+      uuid
+      name
+      bio
+      topics
+      requirements
+      imageUrl
+      isPublic
+    }
+  }
+`;
+
 export const CREATE_PLANET = gql`
   mutation createPlanet($planet: PlanetInput!) {
     createPlanet(planet: $planet) {

@@ -1,86 +1,68 @@
-import { useMutation } from '@apollo/client';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import type { NextPage } from 'next/types';
-import { useEffect, useMemo, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import type { GetServerSidePropsContext, NextPage } from 'next/types';
 
-import { PlanetForm } from '../../../components/planets/planet-form';
-import {
-  Planet,
-  PlanetInput,
-  UpdatePlanetInput,
-  UPDATE_PLANET,
-} from '../../../lib/graphql/planets';
-import { authState, planetsState } from '../../../lib/recoil/atoms';
+import { PlanetEdit } from '../../../features/planet-edit';
+import { addApolloState, initializeApollo } from '../../../lib/apollo';
+import { GET_PLANET_AUTH, Planet } from '../../../lib/graphql/planets';
 
-const EditPlanet: NextPage = () => {
-  const router = useRouter();
-  const planets = useRecoilValue(planetsState);
-  const authUser = useRecoilValue(authState);
-  const planetUuuid = router.query.uuid;
+interface PageProps {
+  planet: Planet;
+}
 
-  if (
-    !authUser ||
-    !authUser.planets.some(
-      (p) => p.planet.uuid === planetUuuid && p.role === 'ADMIN'
-    )
-  ) {
-    router.push('/');
-  }
-
-  const planet = useMemo(() => {
-    return planets.find((planet) => planet.uuid === planetUuuid);
-  }, [planets, planetUuuid]);
-
-  const [variables, setVariables] = useState<PlanetInput | null>(null);
-
-  const [updatePlanet, { loading, error }] = useMutation<
-    {
-      updatePlanet: Planet;
-    },
-    { planetUuid: String; planet: UpdatePlanetInput }
-  >(UPDATE_PLANET, {
-    update: (_cache, { data }) => router.back(),
-    onError: (err) => console.log(err),
-  });
-
-  useEffect(() => {
-    if (variables) {
-      const { bio, requirements, isPublic, topics, image } = variables;
-
-      updatePlanet({
-        variables: {
-          planetUuid: planet!.uuid,
-          planet: {
-            bio,
-            requirements,
-            topics,
-            isPublic,
-            image: image || null,
-          },
-        },
-      });
-
-      setVariables(null);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variables]);
-
+const EditPlanet: NextPage<PageProps> = ({ planet }) => {
   return (
     <div className="my-10 ml-32">
       <Head>
-        <title>{planet?.name || 'Edit Planet'} | Galaxy 42</title>
+        <title>{planet.name} | Galaxy 42</title>
       </Head>
 
-      <PlanetForm
-        planet={planet}
-        setVariables={setVariables}
-        loading={loading}
-        error={error}
-      />
+      <PlanetEdit planet={planet} />
     </div>
   );
 };
 
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const client = initializeApollo({ headers: context?.req?.headers });
+
+  try {
+    const {
+      data: { getPlanetAuth: planet },
+    } = await client.query({
+      query: GET_PLANET_AUTH,
+      variables: { planetUuid: context?.query?.uuid as string },
+    });
+
+    return addApolloState(client, {
+      props: {
+        planet,
+      },
+    });
+  } catch (err: any) {
+    if (err.graphQLErrors[0].extensions.response.statusCode === 401) {
+      return {
+        props: {},
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    if (err.graphQLErrors[0].extensions.response.statusCode === 403) {
+      return {
+        props: {},
+        redirect: {
+          destination: `/planets/${context?.query?.uuid as string}`,
+          permanent: false,
+        },
+      };
+    }
+
+    return {
+      notFound: true,
+    };
+  }
+};
 export default EditPlanet;
