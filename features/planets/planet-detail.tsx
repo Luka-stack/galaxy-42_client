@@ -1,40 +1,26 @@
-import { useQuery } from '@apollo/client';
 import Image from 'next/image';
 
-import BGImg from '../assets/BG-Cosmo-Addons.jpg';
-import { GET_PLANET, Planet } from '../lib/graphql/planets';
-import { SectionSeparator } from '../components/section-separator';
+import BGImg from '../../assets/BG-Cosmo-Addons.jpg';
+import { Planet } from '../../lib/graphql/planets';
+import { SectionSeparator } from '../../components/section-separator';
 import { useRouter } from 'next/router';
 import { PlanetDetailButtons } from './planet-detail-buttons';
-import { useRecoilValue } from 'recoil';
-import { authState } from '../lib/recoil/atoms';
+import { useAuthState } from '../../context/auth-provider';
 
-export const PlanetDetail = ({ uuid }: { uuid: string }) => {
+interface PageProps {
+  planet: Planet;
+}
+
+export const PlanetDetail = ({ planet }: PageProps) => {
   const router = useRouter();
-  const user = useRecoilValue(authState);
-
-  const { data, loading, error } = useQuery<
-    { getPlanet: Planet },
-    { planetUuid: String }
-  >(GET_PLANET, {
-    variables: {
-      planetUuid: uuid!,
-    },
-  });
-
-  // TODO ADD LOADING
-  // TODO ADD ERROR
-
-  if (!data?.getPlanet) {
-    return null;
-  }
+  const { user } = useAuthState();
 
   return (
     <main className="flex items-center w-4/5 mx-auto">
       <div className="flex flex-col">
         <div className="relative w-full border rounded-lg shadow-md h-80 border-gx-purple-500 shadow-purple-neon-500">
           <Image
-            src={data.getPlanet.imageUrl}
+            src={planet.imageUrl}
             alt="Planet Img"
             layout="fill"
             className="rounded-lg"
@@ -43,24 +29,22 @@ export const PlanetDetail = ({ uuid }: { uuid: string }) => {
 
         <div className="relative my-10">
           <h1 className="self-start text-5xl font-bold leading-10 text-gx-purple-500">
-            {data.getPlanet.name}
+            {planet.name}
           </h1>
-          {user && <PlanetDetailButtons uuid={uuid} user={user} />}
+          {user && <PlanetDetailButtons uuid={planet.uuid} user={user} />}
         </div>
 
         <div className="relative grid grid-cols-1 mt-10 lg:grid-cols-4">
           <div className="w-full col-span-3">
             <section>
               <SectionSeparator title="Bio" />
-              <p className="px-10 mt-4 text-purplish-500">
-                {data.getPlanet.bio}
-              </p>
+              <p className="px-10 mt-4 text-purplish-500">{planet.bio}</p>
             </section>
 
             <section>
               <SectionSeparator title="Requirements" style="mt-20" />
               <p className="px-10 mt-4 text-purplish-500">
-                {data.getPlanet.requirements}
+                {planet.requirements}
               </p>
             </section>
           </div>
@@ -77,7 +61,7 @@ export const PlanetDetail = ({ uuid }: { uuid: string }) => {
               Topics
             </h3>
             <div className="z-10 flex flex-wrap gap-4 px-10 mt-4 lg:px-0 lg:items-center lg:flex-col">
-              {data.getPlanet.topics.split(' ').map((topic) => (
+              {planet.topics.split(' ').map((topic) => (
                 <span
                   key={topic}
                   className="px-3 py-1 text-sm text-blue-400 rounded-full bg-blue-900/50 max-w-[7rem] break-words cursor-pointer z-10"

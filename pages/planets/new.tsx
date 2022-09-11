@@ -1,21 +1,14 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
-import { useRecoilValue } from 'recoil';
 import { useEffect, useState } from 'react';
 import type { NextPage } from 'next/types';
 
 import { CREATE_PLANET, Planet, PlanetInput } from '../../lib/graphql/planets';
 import { PlanetForm } from '../../components/planets/planet-form';
-import { authState } from '../../lib/recoil/atoms';
 
 const NewPlanet: NextPage = () => {
   const router = useRouter();
-  const authUser = useRecoilValue(authState);
-
-  if (!authUser) {
-    router.push('/login');
-  }
 
   const [variables, setVariables] = useState<PlanetInput | null>(null);
 
@@ -40,7 +33,7 @@ const NewPlanet: NextPage = () => {
 
       setVariables(null);
     }
-  }, [variables]);
+  }, [variables, createPlanet]);
 
   return (
     <div className="my-10 ml-32">

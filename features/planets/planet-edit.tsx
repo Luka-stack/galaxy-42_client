@@ -1,13 +1,13 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { PlanetForm } from '../components/planets/planet-form';
+import { PlanetForm } from '../../components/planets/planet-form';
 import {
   Planet,
   PlanetInput,
   UpdatePlanetInput,
   UPDATE_PLANET,
-} from '../lib/graphql/planets';
+} from '../../lib/graphql/planets';
 
 export const PlanetEdit = ({ planet }: { planet: Planet }) => {
   const router = useRouter();

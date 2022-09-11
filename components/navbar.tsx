@@ -1,16 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { BellIcon, GlobeIcon } from '@heroicons/react/outline';
-import { useRecoilValue } from 'recoil';
 
 import LogoImg from '../assets/black-hole_64.png';
 import BGImg from '../assets/BG-Cosmo-Addons.jpg';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import { authState } from '../lib/recoil/atoms';
+import { useAuthState } from '../context/auth-provider';
 
 export const Navbar = () => {
-  const authUser = useRecoilValue(authState);
+  const { user } = useAuthState();
   const router = useRouter();
 
   return (
@@ -24,12 +23,12 @@ export const Navbar = () => {
           </div>
         </Link>
 
-        {authUser && (
+        {user && (
           <>
             <Link href="/profile">
               <div className="relative w-10 h-10 mb-4 border border-purple-500 rounded-full shadow-md cursor-pointer hover:scale-110 active:scale-125 shadow-gx-purple-500">
                 <Image
-                  src={authUser.imageUrl}
+                  src={user.imageUrl}
                   alt="profile"
                   layout="fill"
                   className="rounded-full"
@@ -65,7 +64,7 @@ export const Navbar = () => {
       </div>
 
       <div className="z-10 grid w-full grid-cols-1 mt-4 place-items-center gap-y-3">
-        {authUser ? (
+        {user ? (
           <button className="w-24 px-2 py-1 uppercase rounded-md text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15">
             Log out
           </button>

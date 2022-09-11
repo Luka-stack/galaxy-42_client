@@ -3,7 +3,7 @@ import type { NextPage } from 'next/types';
 
 import { Jumbotron } from '../components/jumbotron';
 import { SectionSeparator } from '../components/section-separator';
-import { Planets } from '../features/planets';
+import { Planets } from '../features/planets/planets';
 import { addApolloState, initializeApollo } from '../lib/apollo';
 import { ALL_PLANETS, Planet } from '../lib/graphql/planets';
 

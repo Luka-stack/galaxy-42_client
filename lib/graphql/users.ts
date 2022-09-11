@@ -33,6 +33,55 @@ export interface UserInput {
   image: File | null;
 }
 
+export interface PasswordInput {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export const GET_USERS = gql`
+  query getUsers {
+    users {
+      uuid
+      username
+      email
+      bio
+      topics
+      imageUrl
+      planets {
+        role
+        planet {
+          uuid
+          bio
+          name
+          imageUrl
+        }
+      }
+    }
+  }
+`;
+
+export const GET_USER = gql`
+  query getUser($username: String!) {
+    getUser(username: $username) {
+      uuid
+      username
+      email
+      bio
+      topics
+      imageUrl
+      planets {
+        role
+        planet {
+          uuid
+          bio
+          name
+          imageUrl
+        }
+      }
+    }
+  }
+`;
+
 export const REGISTER_USER = gql`
   mutation register($user: RegisterInput!) {
     register(user: $user) {
@@ -54,6 +103,8 @@ export const LOGIN_USER = gql`
         role
         planet {
           uuid
+          name
+          imageUrl
         }
       }
     }
@@ -73,9 +124,17 @@ export const UPDATE_USER = gql`
         role
         planet {
           uuid
+          name
+          imageUrl
         }
       }
     }
+  }
+`;
+
+export const UPDATE_PASSWORD = gql`
+  mutation updatePassword($old: String!, $new: String!) {
+    updatePassword(old: $old, new: $new)
   }
 `;
 
@@ -92,6 +151,8 @@ export const ME = gql`
         role
         planet {
           uuid
+          name
+          imageUrl
         }
       }
     }

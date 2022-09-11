@@ -25,14 +25,16 @@ export const UserPreview = ({ user }: Props) => {
 
       <p className="mt-4 text-sm text-purplish-500">{user.bio}</p>
 
-      <div className="flex flex-col mt-4">
-        <h3 className="text-lg font-bold text-purplish-300">Interests</h3>
-        {user.topics.split(' ').map((topic) => (
-          <span key={topic} className="mt-1 text-sm text-blue-400">
-            {topic}
-          </span>
-        ))}
-      </div>
+      {user.topics.length > 0 && (
+        <div className="flex flex-col mt-4">
+          <h3 className="text-lg font-bold text-purplish-300">Interests</h3>
+          {user.topics.split(' ').map((topic) => (
+            <span key={topic} className="mt-1 text-sm text-blue-400">
+              {topic}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
-import { PlanetCard } from '../components/planets/planet-card';
-import { QuickSearch } from '../components/quick-search';
-import { ALL_PLANETS, Planet } from '../lib/graphql/planets';
+import { PlanetCard } from '../../components/planets/planet-card';
+import { QuickSearch } from '../../components/quick-search';
+import { ALL_PLANETS, Planet } from '../../lib/graphql/planets';
 
 export const Planets = () => {
   const { data, loading, error } = useQuery<{ planets: Planet[] }>(

@@ -8,7 +8,7 @@ import { RecoilRoot } from 'recoil';
 import { Navbar } from '../components/navbar';
 import { useRouter } from 'next/router';
 import { useApollo } from '../lib/apollo';
-import { AuthProvider } from '../components/auth-provider';
+import { AuthProvider } from '../context/auth-provider';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);

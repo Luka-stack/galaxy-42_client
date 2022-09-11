@@ -1,82 +1,77 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import type { NextPage } from 'next/types';
 
-import ProfileImg from '../../assets/profile.jpg';
-import { useState } from 'react';
-import { PlanetCard } from '../../components/planets/planet-card';
-import { Tabs } from '../../components/tabs';
-import { UserPreview } from '../../components/user-preview';
+import { initializeApollo } from '../../lib/apollo';
+import { GET_USER, GET_USERS, User } from '../../lib/graphql/users';
+import { UserDetails } from '../../features/users/user-details';
 
-const text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation`;
+interface StaticProps {
+  params: { username: string | undefined };
+}
 
-const USER = {
-  uuid: 'uuid',
-  username: 'Tester',
-  email: 'Email',
-  bio: text,
-  topics: 'ReactJs NestJs NextJs',
-  planets: null,
-};
+interface PageProps {
+  user?: User;
+}
 
-const PLANET_EX = [
-  {
-    uuid: 'uuid',
-    name: 'Planet Name',
-    bio: text,
-    requirements: text,
-    topics: 'ReactJs NestJs NextJs',
-    isPublic: true,
-  },
-  {
-    uuid: 'uuid2',
-    name: 'Planet Name2',
-    bio: text,
-    requirements: text,
-    topics: 'ReactJs NestJs NextJs',
-    isPublic: true,
-  },
-];
+const client = initializeApollo();
 
-const UserProfile: NextPage = () => {
+const UserProfile: NextPage<PageProps> = ({ user }) => {
   const router = useRouter();
-  const username = router.query.username;
+  if (router.isFallback) {
+    console.log('LOADING!!!!!!!!!!!!!!!!!');
+  }
 
-  const [showPlanets, setShowPlanets] = useState(true);
+  if (!user) {
+    // TODO NOT FOUND
+    return null;
+  }
 
   return (
     <div className="h-screen mt-10 ml-32">
       <Head>
-        <title>{`${username} | Galaxy 42`}</title>
+        <title>{user.username} | Galaxy 42</title>
       </Head>
 
-      <main className="justify-center w-full h-full">
-        <section className="fixed right-0 px-4 w-72 top-10 shrink-0">
-          <UserPreview user={USER} />
-        </section>
-
-        <section className="h-full px-10 border-r border-gx-purple-500/40 mr-72">
-          <Tabs
-            fstTab="Stories"
-            secTab="Planets"
-            fstSelected={showPlanets}
-            setFstSelected={setShowPlanets}
-          />
-
-          {showPlanets ? (
-            <div className="space-y-5 divide-y divide-gx-purple-500">
-              {PLANET_EX.map((planet) => (
-                <PlanetCard planet={planet} showBio={true} key={planet.uuid} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-white">Stories</div>
-          )}
-        </section>
-      </main>
+      <UserDetails user={user} />
     </div>
   );
+};
+
+export const getStaticPaths = async () => {
+  const {
+    data: { users },
+  } = await client.query<{ users: User[] }>({ query: GET_USERS });
+  const usernames = users?.map((user) => user.username);
+  const paths = usernames?.map((username) => ({ params: { username } }));
+
+  return {
+    paths,
+    fallback: true,
+  };
+};
+
+export const getStaticProps = async ({ params: { username } }: StaticProps) => {
+  if (!username) {
+    throw new Error('Parameter is invalid');
+  }
+
+  try {
+    const {
+      data: { getUser: user },
+    } = await client.query({ query: GET_USER, variables: { username } });
+
+    return {
+      props: {
+        user,
+      },
+      revalidate: 60,
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
 };
 
 export default UserProfile;

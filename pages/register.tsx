@@ -14,6 +14,7 @@ import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { RegisterInput, REGISTER_USER, User } from '../lib/graphql/users';
 import { useRecoilValue } from 'recoil';
 import { authState } from '../lib/recoil/atoms';
+import { useAuthState } from '../context/auth-provider';
 
 type FormValues = {
   email: string;
@@ -43,9 +44,9 @@ const FormSchema = yup.object().shape({
 const Register: NextPage = () => {
   const router = useRouter();
 
-  const authUser = useRecoilValue(authState);
+  const { authenticated } = useAuthState();
 
-  if (authUser) {
+  if (authenticated) {
     router.push('/');
   }
 

@@ -2,9 +2,9 @@ import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 
-import { RequestModal } from '../components/modals/request-modal';
-import { CREATE_REQUEST, RequestInput } from '../lib/graphql/requests';
-import { User } from '../lib/graphql/users';
+import { RequestModal } from '../../components/modals/request-modal';
+import { CREATE_REQUEST, RequestInput } from '../../lib/graphql/requests';
+import { User } from '../../lib/graphql/users';
 
 interface PageProps {
   uuid: string;

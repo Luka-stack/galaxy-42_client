@@ -8,9 +8,10 @@ import classNames from 'classnames';
 interface Props {
   planet: Planet;
   showBio: boolean;
+  showTopics?: boolean;
 }
 
-export const PlanetCard = ({ planet, showBio }: Props) => {
+export const PlanetCard = ({ planet, showBio, showTopics = true }: Props) => {
   const router = useRouter();
 
   return (
@@ -41,22 +42,24 @@ export const PlanetCard = ({ planet, showBio }: Props) => {
           <Image src={planet!.imageUrl} layout="fill" alt="" />
         </div>
       </div>
-      <div className="flex flex-wrap gap-2 mt-5">
-        {planet.topics.split(' ').map((topic) => (
-          <span
-            key={topic}
-            className="px-3 py-1 text-sm text-blue-400 rounded-full cursor-pointer bg-blue-900/50 hover:bg-blue-900"
-            onClick={() =>
-              router.push({
-                pathname: '/planets',
-                query: { search: topic },
-              })
-            }
-          >
-            {topic}
-          </span>
-        ))}
-      </div>
+      {showTopics && (
+        <div className="flex flex-wrap gap-2 mt-5">
+          {planet.topics.split(' ').map((topic) => (
+            <span
+              key={topic}
+              className="px-3 py-1 text-sm text-blue-400 rounded-full cursor-pointer bg-blue-900/50 hover:bg-blue-900"
+              onClick={() =>
+                router.push({
+                  pathname: '/planets',
+                  query: { search: topic },
+                })
+              }
+            >
+              {topic}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

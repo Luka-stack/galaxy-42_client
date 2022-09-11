@@ -1,29 +1,28 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { NextPage } from 'next/types';
+import { PlanetDetail } from '../../../features/planets/planet-detail';
 
 import { initializeApollo } from '../../../lib/apollo';
 import { ALL_PLANETS, GET_PLANET, Planet } from '../../../lib/graphql/planets';
-import { PlanetDetail } from '../../../features/planet-detail';
 
 interface StaticProps {
   params: { uuid: string | undefined };
 }
 
 interface PageProps {
-  uuid?: string;
-  name?: string;
+  planet: Planet;
 }
 
 const client = initializeApollo();
 
-const PlanetPage: NextPage<PageProps> = ({ uuid, name }) => {
+const PlanetPage: NextPage<PageProps> = ({ planet }) => {
   const router = useRouter();
   if (router.isFallback) {
     console.log('LOADING!!!!!!!!!!!!!!!!!');
   }
 
-  if (!uuid) {
+  if (!planet) {
     // TODO ADD ERROR
     return null;
   }
@@ -31,10 +30,10 @@ const PlanetPage: NextPage<PageProps> = ({ uuid, name }) => {
   return (
     <div className="mt-10 mb-10 ml-32">
       <Head>
-        <title>{name} | Galaxy 42</title>
+        <title>{planet.name} | Galaxy 42</title>
       </Head>
 
-      <PlanetDetail uuid={uuid} />
+      <PlanetDetail planet={planet} />
     </div>
   );
 };
@@ -67,8 +66,7 @@ export const getStaticProps = async ({ params: { uuid } }: StaticProps) => {
 
     return {
       props: {
-        uuid: planet?.uuid,
-        name: planet?.name,
+        planet,
       },
       revalidate: 60,
     };
