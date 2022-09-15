@@ -1,4 +1,5 @@
 import { TrashIcon } from '@heroicons/react/outline';
+import classNames from 'classnames';
 import { Notification } from '../../lib/graphql/notifications';
 
 interface Props {
@@ -26,7 +27,10 @@ export const NotificationCard = ({
   return (
     <div
       key={notification.uuid}
-      className="flex items-center justify-between w-full h-16 border-t border-b cursor-pointer border-gx-purple-500/50 hover:bg-bg-600"
+      className={classNames(
+        'flex items-center justify-between w-full h-16 border-t border-b cursor-pointer border-gx-purple-500/50 hover:bg-bg-600',
+        { 'bg-bg-600': selected }
+      )}
       onClick={notificationClicked}
     >
       <div className="flex items-center ml-4">

@@ -63,3 +63,17 @@ export const GET_REQUESTS = gql`
     }
   }
 `;
+
+export const SET_REQUESTS_VIEWED = gql`
+  mutation requestsViewed($requestUuids: [String!]!) {
+    requestsViewed(requestUuids: $requestUuids) {
+      uuid
+    }
+  }
+`;
+
+export const RESOLVE_REQUEST = gql`
+  mutation resolveRequest($requestUuid: String!, $rejected: Boolean!) {
+    resolveRequest(requestUuid: $requestUuid, rejected: $rejected)
+  }
+`;

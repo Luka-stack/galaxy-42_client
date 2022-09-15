@@ -6,6 +6,7 @@ interface Props {
   hasNewNotifications: boolean;
   newNotificationCount: number;
   seenNotificationCount: number;
+  hasNewPlanetsRequests: boolean;
 }
 
 export const NotificationMenu = ({
@@ -14,6 +15,7 @@ export const NotificationMenu = ({
   seenNotificationCount,
   newNotificationCount,
   hasNewNotifications,
+  hasNewPlanetsRequests,
 }: Props) => {
   return (
     <section className="w-40 h-full pt-4 pl-4 bg-gx-purple-500/10 text-purplish-500 shrink-0">
@@ -26,7 +28,7 @@ export const NotificationMenu = ({
       >
         Notifications
         {hasNewNotifications && (
-          <div className="absolute top-0 w-3 h-3 rounded-full bg-gx-purple-50 right-8"></div>
+          <div className="absolute top-0 w-3 h-3 rounded-full bg-gx-purple-50 right-7"></div>
         )}
       </h3>
       <h5
@@ -55,7 +57,7 @@ export const NotificationMenu = ({
       </h5>
       <h3
         className={classNames(
-          'mt-5 text-lg font-bold hover:scale-105 cursor-pointer',
+          'relative mt-5 text-lg font-bold hover:scale-105 cursor-pointer',
           {
             'underline underline-offset-4': option === 'myReq',
           }
@@ -66,7 +68,7 @@ export const NotificationMenu = ({
       </h3>
       <h3
         className={classNames(
-          'mt-5 text-lg font-bold hover:scale-105 cursor-pointer',
+          'relative mt-5 text-lg font-bold hover:scale-105 cursor-pointer',
           {
             'underline underline-offset-4': option === 'planetsReq',
           }
@@ -74,6 +76,9 @@ export const NotificationMenu = ({
         onClick={() => setOption('planetsReq')}
       >
         {`Planets' Requests`}
+        {hasNewPlanetsRequests && (
+          <div className="absolute top-0 w-3 h-3 rounded-full bg-gx-purple-50 right-16"></div>
+        )}
       </h3>
     </section>
   );

@@ -30,6 +30,10 @@ export const NotificationsDetails = () => {
       };
     }, [notifications]);
 
+  const hasNewPlanetsRequests = useMemo(() => {
+    return planetsRequests.some((req) => req.viewed === false);
+  }, [planetsRequests]);
+
   const [option, setOption] = useState<
     'all' | 'new' | 'seen' | 'myReq' | 'planetsReq'
   >('all');
@@ -43,6 +47,7 @@ export const NotificationsDetails = () => {
           hasNewNotifications={hasNewNotifications}
           seenNotificationCount={seenNotifications.length}
           newNotificationCount={newNotifications.length}
+          hasNewPlanetsRequests={hasNewPlanetsRequests}
         />
 
         <section className="w-full px-4 pt-4 space-y-5">
