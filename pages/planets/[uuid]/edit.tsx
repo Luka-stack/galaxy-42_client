@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import type { GetServerSidePropsContext, NextPage } from 'next/types';
+import { PlanetEdit } from '../../../features/planets/planet-edit';
 
-import { PlanetEdit } from '../../../features/planet-edit';
 import { addApolloState, initializeApollo } from '../../../lib/apollo';
 import { GET_PLANET_AUTH, Planet } from '../../../lib/graphql/planets';
 

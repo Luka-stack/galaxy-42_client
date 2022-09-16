@@ -39,3 +39,9 @@ export const DELETE_NOTIFICATIONS = gql`
     }
   }
 `;
+
+export const NOTIFICATION_CREATED = gql`
+  subscription notificationCreated {
+    notificationCreated
+  }
+`;
