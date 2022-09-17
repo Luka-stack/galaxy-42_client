@@ -6,7 +6,7 @@ export interface Notification {
   planet: Planet;
   rejected: boolean;
   viewed: boolean;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export const GET_NOTIFICATIONS = gql`
@@ -42,6 +42,15 @@ export const DELETE_NOTIFICATIONS = gql`
 
 export const NOTIFICATION_CREATED = gql`
   subscription notificationCreated {
-    notificationCreated
+    notificationCreated {
+      uuid
+      rejected
+      viewed
+      createdAt
+      planet {
+        uuid
+        name
+      }
+    }
   }
 `;

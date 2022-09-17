@@ -1,26 +1,17 @@
-import { useSubscription } from '@apollo/client';
 import Head from 'next/head';
 import type { NextPage } from 'next/types';
-import { useEffect } from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import { NotificationsDetails } from '../../features/notifications/notifications-details';
-import { NOTIFICATION_CREATED } from '../../lib/graphql/notifications';
+import { hasNewNotifications } from '../../lib/recoil/atoms';
 
 const NotificationsPage: NextPage = () => {
-  // TODO DELETE LATER
-  const { data, loading } = useSubscription(NOTIFICATION_CREATED, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      console.log(subscriptionData.data);
-    },
-  });
-  //
+  const setHasNew = useSetRecoilState(hasNewNotifications);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  setHasNew(false);
 
   return (
-    <div className="h-screen mt-10 ml-32">
+    <div className="mt-10 ml-32">
       <Head>
         <title>Notifications | Galaxy 42</title>
       </Head>

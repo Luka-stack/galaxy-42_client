@@ -7,9 +7,12 @@ import BGImg from '../assets/BG-Cosmo-Addons.jpg';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { useAuthState } from '../context/auth-provider';
+import { useRecoilValue } from 'recoil';
+import { hasNewNotifications } from '../lib/recoil/atoms';
 
 export const Navbar = () => {
   const { user } = useAuthState();
+  const hasNew = useRecoilValue(hasNewNotifications);
   const router = useRouter();
 
   return (
@@ -38,13 +41,16 @@ export const Navbar = () => {
             <Link href="/profile/notifications">
               <div
                 className={classNames(
-                  'mb-4 font-medium cursor-pointer text-gx-purple-500 hover:text-purple-neon-500',
+                  'mb-4 font-medium cursor-pointer text-gx-purple-500 group hover:text-purple-neon-500 relative',
                   {
                     'text-purple-neon-500':
                       router.pathname === '/profile/notifications',
                   }
                 )}
               >
+                {hasNew && (
+                  <div className="absolute top-0 right-0 w-3 h-3 rounded-full bg-gx-purple-500 group-hover:bg-purple-neon-500"></div>
+                )}
                 <BellIcon className="h-10 mx-auto stroke-1" />
               </div>
             </Link>

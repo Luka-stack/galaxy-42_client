@@ -5,9 +5,15 @@ import React, {
   useContext,
   useReducer,
 } from 'react';
-import { GET_NOTIFICATIONS, Notification } from '../lib/graphql/notifications';
+import { boolean } from 'yup';
+import {
+  GET_NOTIFICATIONS,
+  Notification,
+  NOTIFICATION_CREATED,
+} from '../lib/graphql/notifications';
 import { GET_REQUESTS, Request } from '../lib/graphql/requests';
 import { ME, User } from '../lib/graphql/users';
+import { UserData } from './user-data';
 
 interface State {
   authenticated: boolean;
@@ -108,6 +114,12 @@ const reducer = (state: State, { type, payload }: Action) => {
         ),
       };
 
+    case 'NEW_NOTIFICATION':
+      return {
+        ...state,
+        notifications: [payload, ...state.notifications],
+      };
+
     case 'NOTIFICATIONS':
       return {
         ...state,
@@ -139,28 +151,18 @@ export const AuthProvider: FunctionComponent<Props> = ({ children }) => {
     defaultDispatch({ type, payload });
   };
 
-  const [getRequests] = useLazyQuery(GET_REQUESTS, {
-    onCompleted: ({ getRequests }) => {
-      dispatch('REQUESTS', getRequests);
-    },
-  });
-
-  const [getNotifications] = useLazyQuery(GET_NOTIFICATIONS, {
-    onCompleted: ({ getNotifications }) =>
-      dispatch('NOTIFICATIONS', getNotifications),
-  });
-
   useQuery(ME, {
     onCompleted: ({ me }) => {
       dispatch('LOGIN', me);
-      getRequests();
-      getNotifications();
     },
   });
 
   return (
     <DispatchContext.Provider value={dispatch}>
-      <StateContext.Provider value={state}>{children}</StateContext.Provider>
+      <StateContext.Provider value={state}>
+        {state.user && <UserData />}
+        {children}
+      </StateContext.Provider>
     </DispatchContext.Provider>
   );
 };

@@ -8,6 +8,7 @@ export async function middleware(req: NextRequest) {
     '/profile',
     '/profile/edit',
     '/profile/settings',
+    '/profile/notifications',
     '/planets/new',
   ];
 

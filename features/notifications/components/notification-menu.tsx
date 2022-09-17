@@ -18,7 +18,7 @@ export const NotificationMenu = ({
   hasNewPlanetsRequests,
 }: Props) => {
   return (
-    <section className="w-40 h-full pt-4 pl-4 bg-gx-purple-500/10 text-purplish-500 shrink-0">
+    <section className="w-40 pt-4 pl-4 bg-gx-purple-500/10 text-purplish-500 shrink-0">
       <h3
         className={classNames(
           'relative text-lg font-bold hover:scale-105 cursor-pointer',
