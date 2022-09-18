@@ -6,7 +6,11 @@ import {
   NOTIFICATION_CREATED,
   Notification,
 } from '../lib/graphql/notifications';
-import { GET_REQUESTS, Request } from '../lib/graphql/requests';
+import {
+  GET_REQUESTS,
+  Request,
+  REQUEST_CREATED,
+} from '../lib/graphql/requests';
 import { hasNewNotifications } from '../lib/recoil/atoms';
 import { useAuthDispatch } from './auth-provider';
 
@@ -57,6 +61,28 @@ export const UserData = () => {
         if (!document.location.pathname.match(notificationRoute)) {
           setHasNew(true);
         }
+      }
+    },
+  });
+
+  useSubscription(REQUEST_CREATED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.data?.requestCreated) {
+        if (subscriptionData.data.requestCreated.type === 'planets') {
+          dispatch(
+            'NEW_PLANETS_REQUEST',
+            subscriptionData.data.requestCreated.request
+          );
+        } else {
+          dispatch(
+            'NEW_MY_REQUEST',
+            subscriptionData.data.requestCreated.request
+          );
+        }
+      }
+
+      if (!document.location.pathname.match(notificationRoute)) {
+        setHasNew(true);
       }
     },
   });

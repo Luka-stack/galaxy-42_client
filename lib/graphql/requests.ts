@@ -77,3 +77,25 @@ export const RESOLVE_REQUEST = gql`
     resolveRequest(requestUuid: $requestUuid, rejected: $rejected)
   }
 `;
+
+export const REQUEST_CREATED = gql`
+  subscription requestCreated {
+    requestCreated {
+      type
+      request {
+        uuid
+        content
+        viewed
+        createdAt
+        user {
+          uuid
+          username
+        }
+        planet {
+          uuid
+          name
+        }
+      }
+    }
+  }
+`;

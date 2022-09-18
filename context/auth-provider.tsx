@@ -81,6 +81,18 @@ const reducer = (state: State, { type, payload }: Action) => {
         ),
       };
 
+    case 'NEW_PLANETS_REQUEST':
+      return {
+        ...state,
+        planetsRequests: [payload, ...state.planetsRequests],
+      };
+
+    case 'NEW_MY_REQUEST':
+      return {
+        ...state,
+        myRequests: [payload, ...state.myRequests],
+      };
+
     case 'REQUESTS':
       return {
         ...state,

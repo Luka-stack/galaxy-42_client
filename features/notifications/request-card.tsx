@@ -41,7 +41,7 @@ export const RequestCard = ({
     <div
       key={request.uuid}
       className={classNames(
-        'flex justify-between w-full py-4 border-t border-b border-gx-purple-500/50 hover:bg-bg-600 cursor-pointer',
+        'flex justify-between w-full py-4 border-t border-b border-gx-purple-500/50 hover:bg-bg-600 cursor-pointer px-2',
         { 'bg-bg-600': selected }
       )}
       onClick={requestClicked}
@@ -87,7 +87,7 @@ export const RequestCard = ({
         </div>
       </div>
       {showActions && (
-        <div className="flex items-center mr-2 space-x-4">
+        <div className="flex items-center space-x-4">
           <ThumbUpIcon
             className="w-6 text-green-700 cursor-pointer hover:text-green-500 active:scale-105 h-fit"
             onClick={() => handleRequest!(request.uuid, false)}
