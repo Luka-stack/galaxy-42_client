@@ -31,7 +31,7 @@ export const PlanetDetailButtons = ({ uuid, user }: PageProps) => {
     });
   };
 
-  const [createRequest, { loading, error }] = useMutation<
+  const [createRequest, { error }] = useMutation<
     {
       createRequest: Request;
     },
@@ -40,10 +40,8 @@ export const PlanetDetailButtons = ({ uuid, user }: PageProps) => {
     }
   >(CREATE_REQUEST, {
     update: (_cache, { data }) => console.log(data),
-    onError: (err) => console.log(err),
   });
 
-  // TODO add loading
   // TODO add error
 
   if (planetRelation === 'USER') {

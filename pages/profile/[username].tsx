@@ -5,6 +5,7 @@ import type { NextPage } from 'next/types';
 import { initializeApollo } from '../../lib/apollo';
 import { GET_USER, GET_USERS, User } from '../../lib/graphql/users';
 import { UserDetails } from '../../features/users/user-details';
+import { CoverLoading } from '../../components/loading/cover-loading';
 
 interface StaticProps {
   params: { username: string | undefined };
@@ -19,7 +20,7 @@ const client = initializeApollo();
 const UserProfile: NextPage<PageProps> = ({ user }) => {
   const router = useRouter();
   if (router.isFallback) {
-    console.log('LOADING!!!!!!!!!!!!!!!!!');
+    return <CoverLoading title={'loading...'} />;
   }
 
   if (!user) {

@@ -9,11 +9,22 @@ import { useRouter } from 'next/router';
 import { useAuthState } from '../context/auth-provider';
 import { useRecoilValue } from 'recoil';
 import { hasNewNotifications } from '../lib/recoil/atoms';
+import { useMutation } from '@apollo/client';
+import { LOGOUT_USER } from '../lib/graphql/users';
 
 export const Navbar = () => {
+  const router = useRouter();
+
   const { user } = useAuthState();
   const hasNew = useRecoilValue(hasNewNotifications);
-  const router = useRouter();
+
+  const [logout] = useMutation(LOGOUT_USER, {
+    onCompleted: (data) => {
+      if (data.logout) {
+        router.reload();
+      }
+    },
+  });
 
   return (
     <div className="flex flex-col items-center border-2 border-gx-purple-500/60 h-fit min-h-[20rem] w-32 justify-between p-2 rounded-r-lg fixed top-10">
@@ -71,7 +82,10 @@ export const Navbar = () => {
 
       <div className="z-10 grid w-full grid-cols-1 mt-4 place-items-center gap-y-3">
         {user ? (
-          <button className="w-24 px-2 py-1 uppercase rounded-md text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15">
+          <button
+            className="w-24 px-2 py-1 uppercase rounded-md text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15"
+            onClick={() => logout()}
+          >
             Log out
           </button>
         ) : (

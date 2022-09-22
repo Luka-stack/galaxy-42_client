@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { NextPage } from 'next/types';
+
 import { UserSettings } from '../../features/users/user-settings';
 
 const SettingsPage: NextPage = () => {

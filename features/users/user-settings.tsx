@@ -3,6 +3,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { CoverLoading } from '../../components/loading/cover-loading';
+
 import { UPDATE_PASSWORD } from '../../lib/graphql/users';
 
 type FormValues = {
@@ -40,9 +42,6 @@ export const UserSettings = () => {
         router.push('/profile');
       }
     },
-    onError: (err) => {
-      console.log();
-    },
   });
 
   const onSubmit = (data: FormValues) => {
@@ -55,6 +54,8 @@ export const UserSettings = () => {
 
   return (
     <main className="grid justify-center grid-cols-1 place-items-center">
+      {loading && <CoverLoading title={'updating...'} />}
+
       <h1 className="mb-10 text-3xl font-bold text-gx-purple-500">
         New password
       </h1>

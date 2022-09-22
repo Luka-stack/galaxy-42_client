@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { CoverLoading } from '../../components/loading/cover-loading';
 import { PlanetForm } from '../../components/planets/planet-form';
 import {
   Planet,
@@ -24,7 +25,6 @@ export const PlanetEdit = ({ planet }: { planet: Planet }) => {
     onError: (err) => console.log(err),
   });
 
-  // TODO ADD LOADING
   // TODO ADD ERROR
 
   useEffect(() => {
@@ -50,11 +50,15 @@ export const PlanetEdit = ({ planet }: { planet: Planet }) => {
   }, [variables]);
 
   return (
-    <PlanetForm
-      planet={planet}
-      setVariables={setVariables}
-      loading={loading}
-      error={error}
-    />
+    <>
+      {loading && <CoverLoading title={'updating...'} />}
+
+      <PlanetForm
+        planet={planet}
+        setVariables={setVariables}
+        loading={loading}
+        error={error}
+      />
+    </>
   );
 };

@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { NextPage } from 'next/types';
+import { CoverLoading } from '../../../components/loading/cover-loading';
 import { PlanetDetail } from '../../../features/planets/planet-detail';
 
 import { initializeApollo } from '../../../lib/apollo';
@@ -18,12 +19,13 @@ const client = initializeApollo();
 
 const PlanetPage: NextPage<PageProps> = ({ planet }) => {
   const router = useRouter();
+
   if (router.isFallback) {
-    console.log('LOADING!!!!!!!!!!!!!!!!!');
+    return <CoverLoading title={'loading...'} />;
   }
 
   if (!planet) {
-    // TODO ADD ERROR
+    router.replace('/404');
     return null;
   }
 

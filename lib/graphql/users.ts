@@ -111,6 +111,12 @@ export const LOGIN_USER = gql`
   }
 `;
 
+export const LOGOUT_USER = gql`
+  mutation logout {
+    logout
+  }
+`;
+
 export const UPDATE_USER = gql`
   mutation updateUser($userInput: UserInput!) {
     updateUser(userInput: $userInput) {

@@ -37,12 +37,12 @@ export const PlanetDetail = ({ planet }: PageProps) => {
         <div className="relative grid grid-cols-1 mt-10 lg:grid-cols-4">
           <div className="w-full col-span-3">
             <section>
-              <SectionSeparator title="Bio" />
+              <SectionSeparator title="Bio" style="pl-4" />
               <p className="px-10 mt-4 text-purplish-500">{planet.bio}</p>
             </section>
 
             <section>
-              <SectionSeparator title="Requirements" style="mt-20" />
+              <SectionSeparator title="Requirements" style="mt-20 pl-4" />
               <p className="px-10 mt-4 text-purplish-500">
                 {planet.requirements}
               </p>

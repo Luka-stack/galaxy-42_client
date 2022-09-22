@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import type { NextPage } from 'next/types';
 import { useMemo } from 'react';
+
 import { PlanetCard } from '../../components/planets/planet-card';
 import { SectionSeparator } from '../../components/section-separator';
 import { useAuthState } from '../../context/auth-provider';
@@ -40,7 +41,7 @@ const Profile: NextPage = () => {
           <Link href="/profile/edit">
             <button className="gx-btn">Edit Profile</button>
           </Link>
-          <Link href="/profile/Settings">
+          <Link href="/profile/settings">
             <button className="gx-btn">Change Password</button>
           </Link>
         </div>

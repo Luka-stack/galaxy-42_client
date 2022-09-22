@@ -1,17 +1,13 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import React, {
   createContext,
   FunctionComponent,
   useContext,
   useReducer,
 } from 'react';
-import { boolean } from 'yup';
-import {
-  GET_NOTIFICATIONS,
-  Notification,
-  NOTIFICATION_CREATED,
-} from '../lib/graphql/notifications';
-import { GET_REQUESTS, Request } from '../lib/graphql/requests';
+
+import { Notification } from '../lib/graphql/notifications';
+import { Request } from '../lib/graphql/requests';
 import { ME, User } from '../lib/graphql/users';
 import { UserData } from './user-data';
 

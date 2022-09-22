@@ -12,10 +12,14 @@ export async function middleware(req: NextRequest) {
     '/planets/new',
   ];
 
-  if (authRequire.includes(pathname)) {
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
+  const authPath = ['/login', '/register'];
+
+  if (authRequire.includes(pathname) && !token) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
+
+  if (authPath.includes(pathname) && token) {
+    return NextResponse.redirect(new URL('/', req.url));
   }
 
   return NextResponse.next();

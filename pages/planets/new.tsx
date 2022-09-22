@@ -6,6 +6,7 @@ import type { NextPage } from 'next/types';
 
 import { CREATE_PLANET, Planet, PlanetInput } from '../../lib/graphql/planets';
 import { PlanetForm } from '../../components/planets/planet-form';
+import { CoverLoading } from '../../components/loading/cover-loading';
 
 const NewPlanet: NextPage = () => {
   const router = useRouter();
@@ -20,7 +21,6 @@ const NewPlanet: NextPage = () => {
   >(CREATE_PLANET, {
     update: (_cache, { data }) =>
       router.push(`/planets/${data?.createPlanet.uuid}`),
-    onError: (err) => console.log(err.message),
   });
 
   useEffect(() => {
@@ -40,6 +40,8 @@ const NewPlanet: NextPage = () => {
       <Head>
         <title>New Planet | Galaxy 42</title>
       </Head>
+
+      {loading && <CoverLoading title={'creating...'} />}
 
       <PlanetForm setVariables={setVariables} loading={loading} error={error} />
     </div>
