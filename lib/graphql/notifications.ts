@@ -26,17 +26,13 @@ export const GET_NOTIFICATIONS = gql`
 
 export const SET_NOTIFICATIONS_VIEWED = gql`
   mutation notificationsViewed($notificationUuids: [String!]!) {
-    notificationsViewed(notificationUuids: $notificationUuids) {
-      uuid
-    }
+    notificationsViewed(notificationUuids: $notificationUuids)
   }
 `;
 
 export const DELETE_NOTIFICATIONS = gql`
   mutation deleteNotification($notificationUuids: [String!]!) {
-    deleteNotification(notificationUuids: $notificationUuids) {
-      uuid
-    }
+    deleteNotification(notificationUuids: $notificationUuids)
   }
 `;
 

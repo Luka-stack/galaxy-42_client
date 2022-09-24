@@ -1,9 +1,11 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { RequestModal } from '../../components/modals/request-modal';
-import { CREATE_REQUEST, RequestInput } from '../../lib/graphql/requests';
+import { useAuthState } from '../../context/auth-provider';
+import { CREATE_REQUEST } from '../../lib/graphql/requests';
 import { User } from '../../lib/graphql/users';
 
 interface PageProps {
@@ -13,11 +15,20 @@ interface PageProps {
 
 export const PlanetDetailButtons = ({ uuid, user }: PageProps) => {
   const router = useRouter();
+  const { myRequests } = useAuthState();
+
   const [openModal, setOpenModal] = useState(false);
 
   const planetRelation = useMemo(() => {
     const foundPlanet = user.planets.find((p) => p.planet.uuid === uuid);
-    return foundPlanet ? foundPlanet.role : 'NO_CONNECTION';
+
+    if (foundPlanet) {
+      return foundPlanet.role;
+    }
+
+    const thisReqeust = myRequests.find((req) => req.planet.uuid === uuid);
+
+    return thisReqeust ? 'PENDING' : 'NO_CONNECTION';
   }, [uuid, user]);
 
   const sendRequest = (content: string) => {
@@ -31,20 +42,22 @@ export const PlanetDetailButtons = ({ uuid, user }: PageProps) => {
     });
   };
 
-  const [createRequest, { error }] = useMutation<
-    {
-      createRequest: Request;
+  const [createRequest, { error }] = useMutation(CREATE_REQUEST, {
+    update: (_cache, { data }) => {
+      if (data.createRequest) {
+        toast.info('Request sucessfully send.');
+      } else {
+        toast.error("Couldn't send request. Try again later.");
+      }
     },
-    {
-      request: RequestInput;
-    }
-  >(CREATE_REQUEST, {
-    update: (_cache, { data }) => console.log(data),
+    onError: (err) => {
+      toast.error(err.message);
+    },
   });
 
   // TODO add error
 
-  if (planetRelation === 'USER') {
+  if (planetRelation === 'USER' || planetRelation === 'PENDING') {
     return null;
   }
 

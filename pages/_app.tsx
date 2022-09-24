@@ -1,12 +1,13 @@
 import '../styles/globals.css';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
 import { RecoilRoot } from 'recoil';
-import { Navbar } from '../components/navbar';
 import { useRouter } from 'next/router';
+import { ToastContainer } from 'react-toastify';
+
+import { Navbar } from '../components/navbar';
 import { useApollo } from '../lib/apollo';
 import { AuthProvider } from '../context/auth-provider';
 
@@ -22,6 +23,18 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AuthProvider>
           {!authRoute && <Navbar />}
           <Component {...pageProps} />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            draggable={false}
+            rtl={false}
+            closeOnClick
+            pauseOnFocusLoss
+            pauseOnHover
+            theme="dark"
+          />
         </AuthProvider>
       </RecoilRoot>
     </ApolloProvider>

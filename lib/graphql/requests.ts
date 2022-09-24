@@ -23,9 +23,7 @@ export interface RequestInput {
 
 export const CREATE_REQUEST = gql`
   mutation createRequest($request: RequestInput!) {
-    createRequest(request: $request) {
-      uuid
-    }
+    createRequest(request: $request)
   }
 `;
 
@@ -66,9 +64,7 @@ export const GET_REQUESTS = gql`
 
 export const SET_REQUESTS_VIEWED = gql`
   mutation requestsViewed($requestUuids: [String!]!) {
-    requestsViewed(requestUuids: $requestUuids) {
-      uuid
-    }
+    requestsViewed(requestUuids: $requestUuids)
   }
 `;
 

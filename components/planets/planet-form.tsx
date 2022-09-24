@@ -1,5 +1,4 @@
 import * as yup from 'yup';
-import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import type { ApolloError } from '@apollo/client';
@@ -7,7 +6,6 @@ import classNames from 'classnames';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline';
 
-import CoverImg from '../assets/CP-Cover.jpg';
 import { Topic } from '../topic';
 import { Planet, PlanetInput } from '../../lib/graphql/planets';
 import { useTopics } from '../../hooks/use-topics';

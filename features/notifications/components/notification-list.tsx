@@ -38,16 +38,16 @@ export const NotificationList = ({
   };
 
   const [notificationsViewed] = useMutation(SET_NOTIFICATIONS_VIEWED, {
-    update: (_cache, _data) => {
-      dispatch('UPDATE_NOTIFICATIONS', selectedNotifications);
+    update: (_cache, { data }) => {
+      dispatch('UPDATE_NOTIFICATIONS', data.notificationsViewed);
       setSelectedNotifications([]);
     },
     onError: (err) => console.log(err),
   });
 
   const [deleteNotification] = useMutation(DELETE_NOTIFICATIONS, {
-    update: (_cache, _data) => {
-      dispatch('DELETE_NOTIFICATIONS', selectedNotifications);
+    update: (_cache, { data }) => {
+      dispatch('DELETE_NOTIFICATIONS', data.deleteNotification);
       setSelectedNotifications([]);
     },
     onError: (err) => console.log(err),

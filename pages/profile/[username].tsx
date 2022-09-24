@@ -24,7 +24,7 @@ const UserProfile: NextPage<PageProps> = ({ user }) => {
   }
 
   if (!user) {
-    // TODO NOT FOUND
+    router.replace('/404');
     return null;
   }
 

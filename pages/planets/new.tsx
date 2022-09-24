@@ -4,23 +4,24 @@ import { useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import type { NextPage } from 'next/types';
 
-import { CREATE_PLANET, Planet, PlanetInput } from '../../lib/graphql/planets';
+import { CREATE_PLANET, PlanetInput } from '../../lib/graphql/planets';
 import { PlanetForm } from '../../components/planets/planet-form';
 import { CoverLoading } from '../../components/loading/cover-loading';
+import { ME } from '../../lib/graphql/users';
 
 const NewPlanet: NextPage = () => {
   const router = useRouter();
 
   const [variables, setVariables] = useState<PlanetInput | null>(null);
 
-  const [createPlanet, { loading, error }] = useMutation<
-    {
-      createPlanet: Planet;
+  const [createPlanet, { loading, error }] = useMutation(CREATE_PLANET, {
+    update(_cache, { data }) {
+      router.replace(`/planets/${data.createPlanet.uuid}`);
     },
-    { planet: PlanetInput }
-  >(CREATE_PLANET, {
-    update: (_cache, { data }) =>
-      router.push(`/planets/${data?.createPlanet.uuid}`),
+    refetchQueries: [ME],
+    onQueryUpdated(observableQuery) {
+      return observableQuery.refetch();
+    },
   });
 
   useEffect(() => {

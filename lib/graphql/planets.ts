@@ -8,6 +8,7 @@ export interface Planet {
   topics: string;
   imageUrl: string;
   isPublic: boolean;
+  createdAt: number;
 }
 
 export interface PlanetInput {
@@ -27,6 +28,11 @@ export interface UpdatePlanetInput {
   image: File | null;
 }
 
+export interface QueryPlanetInput {
+  limit?: number;
+  order?: string;
+}
+
 export const ALL_PLANETS = gql`
   query getPlanets {
     planets {
@@ -37,6 +43,17 @@ export const ALL_PLANETS = gql`
       requirements
       imageUrl
       isPublic
+      createdAt
+    }
+  }
+`;
+
+export const QUERY_PLANETS = gql`
+  query queryPlanets($query: QueryPlanetInput!) {
+    queryPlanets(query: $query) {
+      uuid
+      name
+      imageUrl
     }
   }
 `;
@@ -51,6 +68,7 @@ export const GET_PLANET = gql`
       requirements
       imageUrl
       isPublic
+      createdAt
     }
   }
 `;
@@ -65,6 +83,7 @@ export const GET_PLANET_AUTH = gql`
       requirements
       imageUrl
       isPublic
+      createdAt
     }
   }
 `;
@@ -79,6 +98,7 @@ export const CREATE_PLANET = gql`
       topics
       imageUrl
       isPublic
+      createdAt
     }
   }
 `;
@@ -93,6 +113,7 @@ export const UPDATE_PLANET = gql`
       topics
       imageUrl
       isPublic
+      createdAt
     }
   }
 `;

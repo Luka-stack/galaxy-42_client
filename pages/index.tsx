@@ -3,11 +3,15 @@ import type { NextPage } from 'next/types';
 
 import { Jumbotron } from '../components/jumbotron';
 import { SectionSeparator } from '../components/section-separator';
+import { useAuthState } from '../context/auth-provider';
 import { Planets } from '../features/planets/planets';
+import { PlanetsLatest } from '../features/planets/planets-latest';
 import { addApolloState, initializeApollo } from '../lib/apollo';
 import { ALL_PLANETS, Planet } from '../lib/graphql/planets';
 
 const Home: NextPage = () => {
+  const { user } = useAuthState();
+
   return (
     <div className="mt-10 ml-32">
       <Head>
@@ -20,14 +24,20 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="w-11/12 mx-auto">
-        <Jumbotron />
+        {user ? (
+          <SectionSeparator title="The latest creations" style="mt-10 pl-4" />
+        ) : (
+          <>
+            <Jumbotron />
+            <SectionSeparator title="The latest creations" style="mt-20 pl-4" />
+          </>
+        )}
 
-        <SectionSeparator title="The latest creations" style="mt-20 pl-4" />
-        {/* <LatestPlanets /> */}
+        <PlanetsLatest />
 
         <SectionSeparator
           title="Explore different planets"
-          style="mt-20 pl-4"
+          style="mt-10 pl-4"
         />
         <Planets />
       </main>

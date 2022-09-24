@@ -46,8 +46,8 @@ export const RequestList = ({ tab, myRequests, planetsRequests }: Props) => {
   };
 
   const [requestsViewed] = useMutation(SET_REQUESTS_VIEWED, {
-    update: (_cache, _data) => {
-      dispatch('UPDATE_PLANETSREQUESTS', selectedRequests);
+    update: (_cache, { data }) => {
+      dispatch('UPDATE_PLANETSREQUESTS', data.requestsViewed);
       setSelectedRequests([]);
     },
     onError: (err) => console.log(err),

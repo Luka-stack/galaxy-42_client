@@ -30,7 +30,7 @@ export const PlanetCard = ({ planet, showBio, showTopics = true }: Props) => {
             </p>
           )}
           <p className="mt-4 text-sm font-light text-purplish-500">
-            Jul 6 2022
+            since {new Date(planet.createdAt).toLocaleDateString()}
           </p>
         </div>
         <div

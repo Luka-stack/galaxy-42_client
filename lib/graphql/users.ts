@@ -8,6 +8,7 @@ export interface User {
   bio: string;
   topics: string;
   imageUrl: string;
+  createdAt: string;
   planets: {
     role: 'ADMIN' | 'USER';
     planet: Planet;
@@ -47,6 +48,7 @@ export const GET_USERS = gql`
       bio
       topics
       imageUrl
+      createdAt
       planets {
         role
         planet {
@@ -54,6 +56,7 @@ export const GET_USERS = gql`
           bio
           name
           imageUrl
+          createdAt
         }
       }
     }
@@ -69,6 +72,7 @@ export const GET_USER = gql`
       bio
       topics
       imageUrl
+      createdAt
       planets {
         role
         planet {
@@ -76,6 +80,7 @@ export const GET_USER = gql`
           bio
           name
           imageUrl
+          createdAt
         }
       }
     }
@@ -99,12 +104,14 @@ export const LOGIN_USER = gql`
       bio
       topics
       imageUrl
+      createdAt
       planets {
         role
         planet {
           uuid
           name
           imageUrl
+          createdAt
         }
       }
     }
@@ -126,12 +133,14 @@ export const UPDATE_USER = gql`
       bio
       topics
       imageUrl
+      createdAt
       planets {
         role
         planet {
           uuid
           name
           imageUrl
+          createdAt
         }
       }
     }
@@ -153,12 +162,14 @@ export const ME = gql`
       bio
       topics
       imageUrl
+      createdAt
       planets {
         role
         planet {
           uuid
           name
           imageUrl
+          createdAt
         }
       }
     }
