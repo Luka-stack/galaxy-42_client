@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { Bubbles } from '../../components/loading/bubbles';
 import { PlanetCard } from '../../components/planets/planet-card';
 import { QuickSearch } from '../../components/quick-search';
 import { ALL_PLANETS, Planet } from '../../lib/graphql/planets';
@@ -13,6 +14,14 @@ export const Planets = () => {
   );
 
   // TODO Add Loading
+  if (loading) {
+    return (
+      <div className="flex justify-center mt-10">
+        <Bubbles />
+      </div>
+    );
+  }
+
   // TODO Handle Error
 
   return (
