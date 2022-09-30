@@ -19,6 +19,23 @@ input:-webkit-autofill:focus {
   border-color: rgb(103 71 227);
 }
 
+.moving-planet {
+  bottom: 0px;
+  right: 20%;
+  animation: moving 10s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes moving {
+  0% {
+    transform: translate3d(0px, 0px, 0px);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translate3d(0, -400%, 0px);
+  }
+}
+
 @layer components {
   html {
     @apply bg-bg-500 font-roboto;

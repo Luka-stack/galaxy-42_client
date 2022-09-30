@@ -12,8 +12,7 @@ import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { RegisterInput, REGISTER_USER, User } from '../lib/graphql/users';
-import { useRecoilValue } from 'recoil';
-import { authState } from '../lib/recoil/atoms';
+import { CoverLoading } from '../components/loading/cover-loading';
 
 type FormValues = {
   email: string;
@@ -43,12 +42,6 @@ const FormSchema = yup.object().shape({
 const Register: NextPage = () => {
   const router = useRouter();
 
-  const authUser = useRecoilValue(authState);
-
-  if (authUser) {
-    router.push('/');
-  }
-
   const {
     register,
     handleSubmit,
@@ -59,8 +52,7 @@ const Register: NextPage = () => {
     register: RegisterInput;
     user: User;
   }>(REGISTER_USER, {
-    update: (_, __) => router.replace('/login'),
-    onError: (_) => {},
+    update: () => router.replace('/login'),
   });
 
   const backendErrors = useMemo(() => {
@@ -90,151 +82,135 @@ const Register: NextPage = () => {
         <title>Galaxy 42 Registration</title>
       </Head>
 
-      {/* Image BG */}
       <Image src={BgImage} alt="bg" layout="fill" className="opacity-75" />
-      {/* Image Logo */}
+
+      {loading && <CoverLoading title="registering..." />}
 
       <main className="relative flex flex-col items-center w-1/2 p-4 mx-auto my-auto rounded-md shadow-md h-fit bg-bg-500 shadow-gx-purple-500 min-h-[30rem]">
-        {loading ? (
-          <div className="flex h-20 my-auto space-x-5">
-            <div className="flex items-center justify-center space-x-2 loading-ball-one animate-bounce">
-              <div className="w-8 h-8 rounded-full bg-gx-purple-500"></div>
-            </div>
-            <div className="flex items-center justify-center space-x-2 loading-ball-two animate-bounce">
-              <div className="w-8 h-8 rounded-full bg-gx-purple-700"></div>
-            </div>
-            <div className="flex items-center justify-center space-x-2 loading-ball-three animate-bounce">
-              <div className="w-8 h-8 rounded-full bg-gx-purple-900"></div>
-            </div>
+        <div
+          className="absolute flex items-center text-xl font-bold cursor-pointer top-2 left-2 text-gx-purple-500 hover:text-purple-neon-500"
+          onClick={() => router.back()}
+        >
+          <ArrowNarrowLeftIcon className="w-10 h-10 mr-2 stroke-2" />
+          Back
+        </div>
+
+        <h1 className="my-10 text-2xl font-extrabold leading-10 text-gx-purple-500">
+          Registration
+        </h1>
+
+        <form
+          className="flex flex-col space-y-10 w-72"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
+          <div className="relative">
+            <input
+              id="email"
+              type="text"
+              className="w-full h-10 placeholder-transparent border-b-2 border-slate-500 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500"
+              placeholder="placeholder"
+              {...register('email')}
+            />
+
+            <label
+              htmlFor="email"
+              className="absolute left-0 -top-3.5 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-slate-300 peer-focus:text-sm text-gray-400"
+            >
+              Email address
+            </label>
+            {errors.email && (
+              <p className="mt-2 text-xs text-pink-500">
+                {errors.email.message}
+              </p>
+            )}
+            {backendErrors.email && (
+              <p className="mt-2 text-xs text-pink-500">
+                {backendErrors.email}
+              </p>
+            )}
           </div>
-        ) : (
-          <>
-            <div
-              className="absolute flex items-center text-xl font-bold cursor-pointer top-2 left-2 text-gx-purple-500 hover:text-purple-neon-500"
-              onClick={() => router.back()}
+          <div className="relative">
+            <input
+              id="username"
+              type="text"
+              className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
+              placeholder="placeholder"
+              {...register('username')}
+            />
+            <label
+              htmlFor="username"
+              className="absolute left-0 -top-3.5 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-slate-300 peer-focus:text-sm text-gray-400"
             >
-              <ArrowNarrowLeftIcon className="w-10 h-10 mr-2 stroke-2" />
-              Back
-            </div>
-
-            <h1 className="my-10 text-2xl font-extrabold leading-10 text-gx-purple-500">
-              Registration
-            </h1>
-
-            <form
-              className="flex flex-col space-y-10 w-72"
-              onSubmit={handleSubmit(onSubmit)}
-              noValidate
+              Username
+            </label>
+            {errors.username && (
+              <p className="mt-2 text-xs text-pink-500">
+                {errors.username.message}
+              </p>
+            )}
+            {backendErrors.username && (
+              <p className="mt-2 text-xs text-pink-500">
+                {backendErrors.username}
+              </p>
+            )}
+          </div>
+          <div className="relative">
+            <input
+              id="password"
+              type="password"
+              className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
+              placeholder="placeholder"
+              {...register('password')}
+            />
+            <label
+              htmlFor="password"
+              className="absolute left-0 -top-3.5 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-slate-300 peer-focus:text-sm text-gray-400"
             >
-              <div className="relative">
-                <input
-                  id="email"
-                  type="text"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-500 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500"
-                  placeholder="placeholder"
-                  {...register('email')}
-                />
+              Password
+            </label>
+            {errors.password && (
+              <p className="mt-2 text-xs text-pink-500 whitespace-pre">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+          <div className="relative">
+            <input
+              id="confirmation"
+              type="password"
+              className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
+              placeholder="placeholder"
+              {...register('confirmation')}
+            />
+            <label
+              htmlFor="confirmation"
+              className="absolute left-0 -top-3.5 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-slate-300 peer-focus:text-sm text-gray-400"
+            >
+              Password Confirmation
+            </label>
+            {errors.confirmation && (
+              <p className="mt-2 text-xs text-pink-500 whitespace-pre">
+                {errors.confirmation.message}
+              </p>
+            )}
+          </div>
 
-                <label
-                  htmlFor="email"
-                  className="absolute left-0 -top-3.5 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-slate-300 peer-focus:text-sm text-gray-400"
-                >
-                  Email address
-                </label>
-                {errors.email && (
-                  <p className="mt-2 text-xs text-pink-500">
-                    {errors.email.message}
-                  </p>
-                )}
-                {backendErrors.email && (
-                  <p className="mt-2 text-xs text-pink-500">
-                    {backendErrors.email}
-                  </p>
-                )}
-              </div>
-              <div className="relative">
-                <input
-                  id="username"
-                  type="text"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
-                  placeholder="placeholder"
-                  {...register('username')}
-                />
-                <label
-                  htmlFor="username"
-                  className="absolute left-0 -top-3.5 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-slate-300 peer-focus:text-sm text-gray-400"
-                >
-                  Username
-                </label>
-                {errors.username && (
-                  <p className="mt-2 text-xs text-pink-500">
-                    {errors.username.message}
-                  </p>
-                )}
-                {backendErrors.username && (
-                  <p className="mt-2 text-xs text-pink-500">
-                    {backendErrors.username}
-                  </p>
-                )}
-              </div>
-              <div className="relative">
-                <input
-                  id="password"
-                  type="password"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
-                  placeholder="placeholder"
-                  {...register('password')}
-                />
-                <label
-                  htmlFor="password"
-                  className="absolute left-0 -top-3.5 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-slate-300 peer-focus:text-sm text-gray-400"
-                >
-                  Password
-                </label>
-                {errors.password && (
-                  <p className="mt-2 text-xs text-pink-500 whitespace-pre">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-              <div className="relative">
-                <input
-                  id="confirmation"
-                  type="password"
-                  className="w-full h-10 placeholder-transparent border-b-2 border-slate-400 text-purplish-200 peer focus:outline-none focus:border-gx-purple-500 bg-bg-500 placeholder-shown:border-slate-500"
-                  placeholder="placeholder"
-                  {...register('confirmation')}
-                />
-                <label
-                  htmlFor="confirmation"
-                  className="absolute left-0 -top-3.5 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-slate-300 peer-focus:text-sm text-gray-400"
-                >
-                  Password Confirmation
-                </label>
-                {errors.confirmation && (
-                  <p className="mt-2 text-xs text-pink-500 whitespace-pre">
-                    {errors.confirmation.message}
-                  </p>
-                )}
-              </div>
+          <input
+            className="px-2 py-1 rounded-md cursor-pointer text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15"
+            type="submit"
+            value="Create Account"
+          />
+        </form>
 
-              <input
-                className="px-2 py-1 rounded-md cursor-pointer text-purplish-300 from-gx-blue-500 to-gx-purple-500 bg-gradient-to-r hover:hue-rotate-15"
-                type="submit"
-                value="Create Account"
-              />
-            </form>
-
-            <p className="mt-4 text-gx-purple-500">
-              Already have account? You can log{' '}
-              <Link href="/login">
-                <span className="font-bold underline cursor-pointer text-purple-neon-500 underline-offset-4 hover:text-lg">
-                  here!
-                </span>
-              </Link>
-            </p>
-          </>
-        )}
+        <p className="mt-4 text-gx-purple-500">
+          Already have account? You can log{' '}
+          <Link href="/login">
+            <span className="font-bold underline cursor-pointer text-purple-neon-500 underline-offset-4 hover:text-lg">
+              here!
+            </span>
+          </Link>
+        </p>
       </main>
     </div>
   );

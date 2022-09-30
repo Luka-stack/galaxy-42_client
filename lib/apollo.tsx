@@ -3,6 +3,7 @@ import {
   NormalizedCacheObject,
   ApolloLink,
   InMemoryCache,
+  split,
 } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import { IncomingHttpHeaders } from 'http';
@@ -11,6 +12,9 @@ import { AppProps } from 'next/app';
 import { useMemo } from 'react';
 import merge from 'deepmerge';
 import { onError } from 'apollo-link-error';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
@@ -32,29 +36,60 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
         console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+          `[GraphQL error]: Message: ${message}, Location:`,
+          locations,
+          ` Path: ${path}`
         )
       );
     if (networkError) console.log(`[Network error]: ${networkError}`);
   });
 
+  const httpLink = ApolloLink.from([
+    // @ts-ignore
+    link,
+    // this uses apollo-link-http under the hood, so all the options here come from that package
+    createUploadLink({
+      uri:
+        process.env.NEXT_PUBLIC_GRAPHQL_URI ||
+        'http://localhost:3000/api/graphql',
+      fetchOptions: {
+        mode: 'cors',
+      },
+      credentials: 'include',
+      fetch: enhancedFetch,
+    }),
+  ]);
+
+  const wsLink =
+    typeof window !== 'undefined'
+      ? new GraphQLWsLink(
+          createClient({
+            url: 'ws://localhost:5000/graphql',
+            connectionParams: {
+              cookie: document.cookie,
+            },
+          })
+        )
+      : null;
+
+  const splitLink =
+    typeof window !== 'undefined' && wsLink != null
+      ? split(
+          ({ query }) => {
+            const definition = getMainDefinition(query);
+            return (
+              definition.kind === 'OperationDefinition' &&
+              definition.operation === 'subscription'
+            );
+          },
+          wsLink,
+          httpLink
+        )
+      : httpLink;
+
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: ApolloLink.from([
-      // @ts-ignore
-      link,
-      // this uses apollo-link-http under the hood, so all the options here come from that package
-      createUploadLink({
-        uri:
-          process.env.NEXT_PUBLIC_GRAPHQL_URI ||
-          'http://localhost:3000/api/graphql',
-        fetchOptions: {
-          mode: 'cors',
-        },
-        credentials: 'include',
-        fetch: enhancedFetch,
-      }),
-    ]),
+    link: splitLink,
     cache: new InMemoryCache({
       possibleTypes: {
         authenticatedItem: ['User'],

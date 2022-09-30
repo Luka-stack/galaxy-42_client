@@ -1,32 +1,27 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
-import { useRecoilValue } from 'recoil';
 import { useEffect, useState } from 'react';
 import type { NextPage } from 'next/types';
 
-import { CREATE_PLANET, Planet, PlanetInput } from '../../lib/graphql/planets';
-import { PlanetForm } from '../../components/planet-form';
-import { authState } from '../../lib/recoil/atoms';
+import { CREATE_PLANET, PlanetInput } from '../../lib/graphql/planets';
+import { PlanetForm } from '../../components/planets/planet-form';
+import { CoverLoading } from '../../components/loading/cover-loading';
+import { ME } from '../../lib/graphql/users';
 
 const NewPlanet: NextPage = () => {
   const router = useRouter();
-  const authUser = useRecoilValue(authState);
-
-  if (!authUser) {
-    router.push('/');
-  }
 
   const [variables, setVariables] = useState<PlanetInput | null>(null);
 
-  const [createPlanet, { loading, error }] = useMutation<
-    {
-      createPlanet: Planet;
+  const [createPlanet, { loading, error }] = useMutation(CREATE_PLANET, {
+    update(_cache, { data }) {
+      router.replace(`/planets/${data.createPlanet.uuid}`);
     },
-    { planet: PlanetInput }
-  >(CREATE_PLANET, {
-    update: (_cache, { data }) => router.back(),
-    onError: (err) => console.log(err.message),
+    refetchQueries: [ME],
+    onQueryUpdated(observableQuery) {
+      return observableQuery.refetch();
+    },
   });
 
   useEffect(() => {
@@ -39,13 +34,15 @@ const NewPlanet: NextPage = () => {
 
       setVariables(null);
     }
-  }, [variables]);
+  }, [variables, createPlanet]);
 
   return (
     <div className="my-10 ml-32">
       <Head>
         <title>New Planet | Galaxy 42</title>
       </Head>
+
+      {loading && <CoverLoading title={'creating...'} />}
 
       <PlanetForm setVariables={setVariables} loading={loading} error={error} />
     </div>
