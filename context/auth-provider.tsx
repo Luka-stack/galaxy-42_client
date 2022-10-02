@@ -164,6 +164,7 @@ export const AuthProvider: FunctionComponent<Props> = ({ children }) => {
     onCompleted: ({ me }) => {
       dispatch('LOGIN', me);
     },
+    onError: (error) => console.log(error),
   });
 
   return (

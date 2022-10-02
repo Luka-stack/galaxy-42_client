@@ -14,13 +14,13 @@ export const Planets = () => {
   );
 
   // TODO Add Loading
-  if (loading) {
-    return (
-      <div className="flex justify-center mt-10">
-        <Bubbles />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center mt-10">
+  //       <Bubbles />
+  //     </div>
+  //   );
+  // }
 
   // TODO Handle Error
 

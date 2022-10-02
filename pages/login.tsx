@@ -5,14 +5,16 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import type { NextPage } from 'next/types';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
-import { LOGIN_USER } from '../lib/graphql/users';
+import { LOGIN_USER, ME } from '../lib/graphql/users';
 import { useAuthDispatch } from '../context/auth-provider';
 import { CoverLoading } from '../components/loading/cover-loading';
+import { setJwtToken } from '../lib/access-token';
+import { initializeApollo } from '../backup/apollo';
 
 type FormValues = {
   email: string;
@@ -27,6 +29,8 @@ const FormSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 
+const client = initializeApollo();
+
 const Login: NextPage = () => {
   const router = useRouter();
   const dispatch = useAuthDispatch();
@@ -37,10 +41,11 @@ const Login: NextPage = () => {
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(FormSchema) });
 
-  const [login, { loading, error }] = useLazyQuery(LOGIN_USER, {
-    onCompleted: ({ login }) => {
-      dispatch('LOGIN', login);
-      router.back();
+  const [login, { loading, error }] = useMutation(LOGIN_USER, {
+    refetchQueries: [ME],
+    update: (_cache, { data }) => {
+      setJwtToken(data.login.accessToken);
+      router.replace('/');
     },
   });
 
