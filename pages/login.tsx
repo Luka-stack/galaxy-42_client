@@ -5,16 +5,14 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import type { NextPage } from 'next/types';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
 import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { LOGIN_USER, ME } from '../lib/graphql/users';
-import { useAuthDispatch } from '../context/auth-provider';
 import { CoverLoading } from '../components/loading/cover-loading';
 import { setJwtToken } from '../lib/access-token';
-import { initializeApollo } from '../backup/apollo';
 
 type FormValues = {
   email: string;
@@ -29,11 +27,8 @@ const FormSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 
-const client = initializeApollo();
-
 const Login: NextPage = () => {
   const router = useRouter();
-  const dispatch = useAuthDispatch();
 
   const {
     register,
@@ -43,9 +38,11 @@ const Login: NextPage = () => {
 
   const [login, { loading, error }] = useMutation(LOGIN_USER, {
     refetchQueries: [ME],
+    awaitRefetchQueries: true,
     update: (_cache, { data }) => {
       setJwtToken(data.login.accessToken);
-      router.replace('/');
+      const returnUrl = (router.query.returnUrl as string) || '/';
+      router.push(returnUrl);
     },
   });
 
@@ -75,10 +72,10 @@ const Login: NextPage = () => {
       <div className="relative flex flex-col items-center w-[27rem] p-4 mx-auto my-auto rounded-md shadow-md h-fit bg-bg-500 shadow-gx-purple-500 min-h-[28rem]">
         <div
           className="absolute flex items-center text-xl font-bold cursor-pointer top-2 left-2 text-gx-purple-500 hover:text-purple-neon-500"
-          onClick={() => router.back()}
+          onClick={() => router.replace('/')}
         >
           <ArrowNarrowLeftIcon className="w-10 h-10 mr-2 stroke-2" />
-          Back
+          Home
         </div>
 
         <h1 className="my-10 text-2xl font-extrabold leading-10 text-gx-purple-500">

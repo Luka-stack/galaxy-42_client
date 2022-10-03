@@ -42,6 +42,9 @@ export const UserSettings = () => {
         router.push('/profile');
       }
     },
+    onError: () => {
+      console.log('update password error');
+    },
   });
 
   const onSubmit = (data: FormValues) => {

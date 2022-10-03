@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 
 import { Notification } from '../lib/graphql/notifications';
-import { Planet } from '../lib/graphql/planets';
 import { Request } from '../lib/graphql/requests';
 import { ME, User } from '../lib/graphql/users';
 import { UserData } from './user-data';

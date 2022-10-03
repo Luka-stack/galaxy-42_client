@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import { Navbar } from '../components/navbar';
 import { useApollo } from '../lib/apollo';
 import { AuthProvider } from '../context/auth-provider';
+import { RouteGuard } from '../components/guards/route-guard';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
@@ -21,8 +22,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ApolloProvider client={apolloClient}>
       <RecoilRoot>
         <AuthProvider>
-          {!authRoute && <Navbar />}
-          <Component {...pageProps} />
+          <RouteGuard>
+            {!authRoute && <Navbar />}
+            <Component {...pageProps} />
+          </RouteGuard>
+
           <ToastContainer
             position="top-right"
             autoClose={5000}

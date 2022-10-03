@@ -57,12 +57,17 @@ const getOrCreateWebsocketLink = () => {
 
 const makeTokenRefreshLink = () => {
   return new TokenRefreshLink({
-    accessTokenField: 'accessToken',
-    isTokenValidOrUndefined: () => {
+    isTokenValidOrUndefined: (operation: Operation) => {
       const token = getJwtToken();
+
+      if (operation.operationName === 'me' && !token) {
+        return false;
+      }
+
       if (!token) {
         return true;
       }
+
       const claims: JwtPayload = decodeJWT(token);
       const expirationTimeInSeconds = claims.exp! * 1000;
       const now = new Date();
@@ -90,19 +95,15 @@ const makeTokenRefreshLink = () => {
       return response.json();
     },
     handleFetch: (accessToken) => {
-      console.log('access:', accessToken);
-
       setJwtToken(accessToken);
     },
-    handleResponse: (operation, accessTokenField) => (response: any) => {
+    handleResponse: (_operation, _accessTokenField) => (response: any) => {
       // here you can parse response, handle errors, prepare returned token to
       // further operations
       // returned object should be like this:
       // {
       //    access_token: 'token string here'
-      // }
 
-      console.log(response);
       return { access_token: response.data.refreshToken.accessToken };
     },
     handleError: (error) => {
@@ -129,6 +130,9 @@ const createLink = () => {
   const httpLink = createUploadLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_URI,
     credentials: 'include',
+    fetchOptions: {
+      mode: 'cors',
+    },
   });
 
   const authLink = new ApolloLink((operation, forward) => {
