@@ -89,10 +89,10 @@ const Register: NextPage = () => {
       <main className="relative flex flex-col items-center w-1/2 p-4 mx-auto my-auto rounded-md shadow-md h-fit bg-bg-500 shadow-gx-purple-500 min-h-[30rem]">
         <div
           className="absolute flex items-center text-xl font-bold cursor-pointer top-2 left-2 text-gx-purple-500 hover:text-purple-neon-500"
-          onClick={() => router.back()}
+          onClick={() => router.replace('/')}
         >
           <ArrowNarrowLeftIcon className="w-10 h-10 mr-2 stroke-2" />
-          Back
+          Home
         </div>
 
         <h1 className="my-10 text-2xl font-extrabold leading-10 text-gx-purple-500">

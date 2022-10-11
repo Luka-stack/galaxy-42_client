@@ -20,9 +20,9 @@ const client = initializeApollo();
 const PlanetPage: NextPage<PageProps> = ({ planet }) => {
   const router = useRouter();
 
-  if (router.isFallback) {
-    return <CoverLoading title={'loading...'} />;
-  }
+  // if (router.isFallback) {
+  //   return <CoverLoading title={'loading...'} />;
+  // }
 
   if (!planet) {
     router.replace('/404');

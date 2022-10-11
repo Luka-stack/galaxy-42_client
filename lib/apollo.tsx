@@ -3,7 +3,7 @@ import {
   NormalizedCacheObject,
   ApolloLink,
   InMemoryCache,
-  split,
+  Operation,
 } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import { IncomingHttpHeaders } from 'http';
@@ -12,27 +12,110 @@ import { AppProps } from 'next/app';
 import { useMemo } from 'react';
 import merge from 'deepmerge';
 import { onError } from 'apollo-link-error';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
-import { getMainDefinition } from '@apollo/client/utilities';
+import { TokenRefreshLink } from 'apollo-link-token-refresh';
+import decodeJWT, { JwtPayload } from 'jwt-decode';
+
+import { getJwtToken, setJwtToken } from './access-token';
 
 const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
-const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
-  const enhancedFetch = (url: RequestInfo, init: RequestInit) => {
-    return fetch(url, {
-      ...init,
-      headers: {
-        ...init.headers,
-        'Access-Control-Allow-Origin': '*',
-        Cookie: headers?.cookie ?? '',
-      },
-    }).then((response) => response);
-  };
+const isServer = () => typeof window === 'undefined';
 
-  const link = onError(({ graphQLErrors, networkError }) => {
+const getHeaders = () => {
+  const headers = {} as any;
+  const token = getJwtToken();
+  if (token) headers['authorization'] = `Bearer ${token}`;
+  return headers;
+};
+
+const operationIsSubscription = ({ query }: Operation): boolean => {
+  const definition = getMainDefinition(query);
+  return (
+    definition.kind === 'OperationDefinition' &&
+    definition.operation === 'subscription'
+  );
+};
+
+let graphqlWsLink: GraphQLWsLink | null = null;
+const getOrCreateWebsocketLink = () => {
+  graphqlWsLink ??= new GraphQLWsLink(
+    createClient({
+      url: 'ws://localhost:5000/graphql',
+      connectionParams: () => {
+        return { headers: getHeaders() };
+      },
+    })
+  );
+
+  return graphqlWsLink;
+};
+
+const makeTokenRefreshLink = () => {
+  return new TokenRefreshLink({
+    isTokenValidOrUndefined: (operation: Operation) => {
+      const token = getJwtToken();
+
+      if (operation.operationName === 'me' && !token) {
+        return false;
+      }
+
+      if (!token) {
+        return true;
+      }
+
+      const claims: JwtPayload = decodeJWT(token);
+      const expirationTimeInSeconds = claims.exp! * 1000;
+      const now = new Date();
+
+      return expirationTimeInSeconds >= now.getTime();
+    },
+    fetchAccessToken: async () => {
+      const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URI!, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+            query refreshToken {
+              refreshToken {
+                accessToken
+              }
+            }
+          `,
+        }),
+      });
+
+      return response.json();
+    },
+    handleFetch: (accessToken) => {
+      setJwtToken(accessToken);
+    },
+    handleResponse: (_operation, _accessTokenField) => (response: any) => {
+      // here you can parse response, handle errors, prepare returned token to
+      // further operations
+      // returned object should be like this:
+      // {
+      //    access_token: 'token string here'
+
+      return { access_token: response.data.refreshToken.accessToken };
+    },
+    handleError: (error) => {
+      console.warn('Your refresh token is invalid. Try to reauthenticate.');
+      console.error(error);
+      setJwtToken('');
+    },
+  });
+};
+
+const createLink = () => {
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
         console.log(
@@ -44,52 +127,56 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
     if (networkError) console.log(`[Network error]: ${networkError}`);
   });
 
-  const httpLink = ApolloLink.from([
-    // @ts-ignore
-    link,
-    // this uses apollo-link-http under the hood, so all the options here come from that package
-    createUploadLink({
-      uri:
-        process.env.NEXT_PUBLIC_GRAPHQL_URI ||
-        'http://localhost:3000/api/graphql',
-      fetchOptions: {
-        mode: 'cors',
+  const httpLink = createUploadLink({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_URI,
+    credentials: 'include',
+    fetchOptions: {
+      mode: 'cors',
+    },
+  });
+
+  const authLink = new ApolloLink((operation, forward) => {
+    operation.setContext(({ headers = {} }) => ({
+      headers: {
+        ...headers,
+        ...getHeaders(),
       },
-      credentials: 'include',
-      fetch: enhancedFetch,
-    }),
-  ]);
+    }));
 
-  const wsLink =
-    typeof window !== 'undefined'
-      ? new GraphQLWsLink(
-          createClient({
-            url: 'ws://localhost:5000/graphql',
-            connectionParams: {
-              cookie: document.cookie,
-            },
-          })
-        )
-      : null;
+    return forward(operation);
+  });
 
-  const splitLink =
-    typeof window !== 'undefined' && wsLink != null
-      ? split(
-          ({ query }) => {
-            const definition = getMainDefinition(query);
-            return (
-              definition.kind === 'OperationDefinition' &&
-              definition.operation === 'subscription'
-            );
-          },
-          wsLink,
-          httpLink
-        )
-      : httpLink;
+  if (isServer()) {
+    return ApolloLink.from([
+      makeTokenRefreshLink(),
+      authLink,
 
+      //@ts-ignore
+      errorLink,
+
+      httpLink,
+    ]);
+  } else {
+    return ApolloLink.from([
+      makeTokenRefreshLink(),
+      authLink,
+
+      //@ts-ignore
+      errorLink,
+
+      ApolloLink.split(
+        operationIsSubscription,
+        getOrCreateWebsocketLink(),
+        httpLink
+      ),
+    ]);
+  }
+};
+
+const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   return new ApolloClient({
-    ssrMode: typeof window === 'undefined',
-    link: splitLink,
+    ssrMode: isServer(),
+    link: createLink(),
     cache: new InMemoryCache({
       possibleTypes: {
         authenticatedItem: ['User'],
@@ -135,7 +222,7 @@ export const initializeApollo = (
   }
 
   // For SSG and SSR always create a new Apollo Client
-  if (typeof window === 'undefined') return _apolloClient;
+  if (isServer()) return _apolloClient;
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;
 

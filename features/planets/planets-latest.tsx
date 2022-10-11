@@ -25,8 +25,6 @@ export const PlanetsLatest = () => {
     );
   }
 
-  console.log(data);
-
   return (
     <div className="grid grid-cols-3 grid-rows-2 px-4 mt-6 gap-y-6">
       {data.queryPlanets.map((planet: Planet, id: number) => (

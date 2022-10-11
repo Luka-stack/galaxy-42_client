@@ -29,6 +29,7 @@ export const PlanetDetailButtons = ({ uuid, user }: PageProps) => {
     const thisReqeust = myRequests.find((req) => req.planet.uuid === uuid);
 
     return thisReqeust ? 'PENDING' : 'NO_CONNECTION';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid, user]);
 
   const sendRequest = (content: string) => {

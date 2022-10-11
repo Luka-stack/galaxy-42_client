@@ -96,24 +96,9 @@ export const REGISTER_USER = gql`
 `;
 
 export const LOGIN_USER = gql`
-  query login($login: LoginInput!) {
+  mutation login($login: LoginInput!) {
     login(login: $login) {
-      uuid
-      username
-      email
-      bio
-      topics
-      imageUrl
-      createdAt
-      planets {
-        role
-        planet {
-          uuid
-          name
-          imageUrl
-          createdAt
-        }
-      }
+      accessToken
     }
   }
 `;
