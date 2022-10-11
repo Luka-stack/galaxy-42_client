@@ -26,6 +26,18 @@ input:-webkit-autofill:focus {
   animation-delay: 1s;
 }
 
+.popup-content {
+  background-color: #14101e;
+  border: 1px solid #6747e3;
+  color: #c7bae1;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.popup-arrow {
+  color: #6747e3;
+}
+
 @keyframes moving {
   0% {
     transform: translate3d(0px, 0px, 0px);

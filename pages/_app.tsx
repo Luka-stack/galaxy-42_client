@@ -15,7 +15,7 @@ import { RouteGuard } from '../components/guards/route-guard';
 function MyApp({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
   const { pathname } = useRouter();
-  const authRoutes = ['/register', '/login'];
+  const authRoutes = ['/register', '/login', '/chat'];
   const authRoute = authRoutes.includes(pathname);
 
   return (
