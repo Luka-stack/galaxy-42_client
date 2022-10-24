@@ -11,7 +11,7 @@ interface PageProps {
 
 const PlanetsPage: NextPage<PageProps> = ({ planets }) => {
   return (
-    <div className="my-10 ml-32">
+    <div className="w-full mt-10">
       <Head>
         <title>Planets | Galaxy 42</title>
       </Head>

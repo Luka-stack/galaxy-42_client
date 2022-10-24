@@ -8,7 +8,7 @@ interface Props {
 
 export const UserPreview = ({ user }: Props) => {
   return (
-    <div>
+    <div className="w-full mt-10">
       <div className="relative w-24 h-24 border rounded-full border-gx-purple-500">
         <Image
           src={user.imageUrl}

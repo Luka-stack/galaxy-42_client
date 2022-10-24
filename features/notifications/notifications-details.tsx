@@ -39,7 +39,7 @@ export const NotificationsDetails = () => {
   >('all');
 
   return (
-    <main className="px-5 mx-auto">
+    <main className="w-11/12 mx-auto xl:w-3/4">
       <div className="flex w-full min-h-screen border border-b-0 rounded-b-none border-gx-purple-500/50 rounded-2xl">
         <NotificationMenu
           option={option}

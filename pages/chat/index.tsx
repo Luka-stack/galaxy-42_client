@@ -2,8 +2,8 @@ import Head from 'next/head';
 import { NextPage } from 'next/types';
 import { ChatContainer } from '../../components/chat/chat-container';
 
-import { PlanetChatList } from '../../components/chat/planet-chat-list';
-import { Header } from '../../components/header';
+import { ChatNavigation } from '../../components/chat/chat-navigation';
+import { Navigation } from '../../components/navigation';
 
 const ChatPage: NextPage = () => {
   return (
@@ -12,11 +12,11 @@ const ChatPage: NextPage = () => {
         <title>Chat | Galaxy 42</title>
       </Head>
 
-      <Header />
+      <Navigation />
 
       <main className="flex w-full h-screen">
-        <PlanetChatList />
-        <ChatContainer />
+        <ChatNavigation />
+        {/* <ChatContainer /> */}
       </main>
     </div>
   );

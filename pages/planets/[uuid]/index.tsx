@@ -1,10 +1,9 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { NextPage } from 'next/types';
-import { CoverLoading } from '../../../components/loading/cover-loading';
-import { PlanetDetail } from '../../../features/planets/planet-detail';
 
 import { initializeApollo } from '../../../lib/apollo';
+import { PlanetDetail } from '../../../features/planets/planet-detail';
 import { ALL_PLANETS, GET_PLANET, Planet } from '../../../lib/graphql/planets';
 
 interface StaticProps {
@@ -30,7 +29,7 @@ const PlanetPage: NextPage<PageProps> = ({ planet }) => {
   }
 
   return (
-    <div className="mt-10 mb-10 ml-32">
+    <div className="w-full my-10">
       <Head>
         <title>{planet.name} | Galaxy 42</title>
       </Head>

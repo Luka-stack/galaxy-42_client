@@ -7,7 +7,7 @@ import RocketImg from '../assets/rocket.png';
 
 const FourOhFour: NextPage = () => {
   return (
-    <div className="h-screen bg-[url('../assets/BG-Cosmo-5.jpg')] bg-blend-overlay bg-bg-100">
+    <div>
       <Head>
         <title>Oops! Are you lost?</title>
       </Head>

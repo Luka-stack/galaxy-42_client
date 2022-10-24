@@ -4,28 +4,29 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
 import { RecoilRoot } from 'recoil';
-import { useRouter } from 'next/router';
 import { ToastContainer } from 'react-toastify';
 
-import { Navbar } from '../components/navbar';
 import { useApollo } from '../lib/apollo';
 import { AuthProvider } from '../context/auth-provider';
 import { RouteGuard } from '../components/guards/route-guard';
+import { Navigation } from '../components/navigation';
+import { ChatNavigation } from '../components/chat/chat-navigation';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
-  const { pathname } = useRouter();
-  const authRoutes = ['/register', '/login', '/chat'];
-  const authRoute = authRoutes.includes(pathname);
 
   return (
     <ApolloProvider client={apolloClient}>
       <RecoilRoot>
         <AuthProvider>
-          <RouteGuard>
-            {!authRoute && <Navbar />}
-            <Component {...pageProps} />
-          </RouteGuard>
+          <div className="flex">
+            <Navigation />
+            <ChatNavigation />
+
+            <RouteGuard>
+              <Component {...pageProps} />
+            </RouteGuard>
+          </div>
 
           <ToastContainer
             position="top-right"

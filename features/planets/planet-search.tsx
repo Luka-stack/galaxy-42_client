@@ -1,6 +1,7 @@
 import { SearchIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
 import { useRef, useState, KeyboardEvent, useEffect } from 'react';
+
 import { PlanetCard } from '../../components/planets/planet-card';
 import { SectionSeparator } from '../../components/section-separator';
 import { SelectionDropdown } from '../../components/selection-dropdown';
@@ -87,7 +88,7 @@ export const PlanetSearch = ({ planets }: PageProps) => {
   }, [sortingOption, orderOption]);
 
   return (
-    <main className="w-11/12 mx-auto">
+    <main className="w-11/12 mx-auto xl:w-3/4">
       <section className="flex w-1/2 h-12 mx-auto overflow-hidden border-2 border-gx-purple-500/60 rounded-3xl">
         <SearchIcon
           className="w-12 px-2 cursor-pointer text-gx-purple-500 hover:bg-gx-purple-500 hover:text-purplish-500 active:scale-105"

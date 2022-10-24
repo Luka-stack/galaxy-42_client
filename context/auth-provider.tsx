@@ -5,6 +5,7 @@ import React, {
   useContext,
   useReducer,
 } from 'react';
+import { ChatNavigation } from '../components/chat/chat-navigation';
 
 import { Notification } from '../lib/graphql/notifications';
 import { Request } from '../lib/graphql/requests';

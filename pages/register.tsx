@@ -1,16 +1,13 @@
+import * as yup from 'yup';
 import Head from 'next/head';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
-import type { NextPage } from 'next/types';
-import { useMutation } from '@apollo/client';
-import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
+import type { NextPage } from 'next/types';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { ArrowNarrowLeftIcon } from '@heroicons/react/outline';
 
-import BgImage from '../assets/Bg-Cosmo-5.jpg';
 import { RegisterInput, REGISTER_USER, User } from '../lib/graphql/users';
 import { CoverLoading } from '../components/loading/cover-loading';
 
@@ -77,25 +74,15 @@ const Register: NextPage = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center w-full">
       <Head>
         <title>Galaxy 42 Registration</title>
       </Head>
 
-      <Image src={BgImage} alt="bg" layout="fill" className="opacity-75" />
-
       {loading && <CoverLoading title="registering..." />}
 
-      <main className="relative flex flex-col items-center w-1/2 p-4 mx-auto my-auto rounded-md shadow-md h-fit bg-bg-500 shadow-gx-purple-500 min-h-[30rem]">
-        <div
-          className="absolute flex items-center text-xl font-bold cursor-pointer top-2 left-2 text-gx-purple-500 hover:text-purple-neon-500"
-          onClick={() => router.replace('/')}
-        >
-          <ArrowNarrowLeftIcon className="w-10 h-10 mr-2 stroke-2" />
-          Home
-        </div>
-
-        <h1 className="my-10 text-2xl font-extrabold leading-10 text-gx-purple-500">
+      <main className="relative flex flex-col items-center w-1/2 p-4 mx-auto my-auto rounded-md h-fit bg-bg-500 border border-gx-purple-500 min-h-[30rem]">
+        <h1 className="mb-10 text-2xl font-extrabold leading-10 text-gx-purple-500">
           Registration
         </h1>
 

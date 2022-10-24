@@ -11,7 +11,7 @@ const NotificationsPage: NextPage = () => {
   setHasNew(false);
 
   return (
-    <div className="mt-10 ml-32">
+    <div className="w-full mt-10">
       <Head>
         <title>Notifications | Galaxy 42</title>
       </Head>

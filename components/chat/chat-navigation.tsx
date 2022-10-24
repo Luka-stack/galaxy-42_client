@@ -6,11 +6,11 @@ import LogoImg from '../../assets/black-hole_64.png';
 
 const PLANETS = ['Planet 1', 'Planet 2', 'Super Duper Planet 3'];
 
-export const PlanetChatList = () => {
+export const ChatNavigation = () => {
   const [selected, setSelected] = useState(0);
 
   return (
-    <div className="flex flex-col items-center flex-none w-24 h-screen py-4 overflow-y-auto border-r border-gx-purple-500/50 scrollbar-hide">
+    <div className="sticky top-0 flex flex-col items-center flex-none w-24 h-screen py-4 overflow-y-auto border-r border-gx-purple-500/50 scrollbar-hide">
       {PLANETS.map((planet, id) => (
         <Popup
           key={id}

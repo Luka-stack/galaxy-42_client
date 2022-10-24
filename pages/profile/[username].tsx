@@ -29,7 +29,7 @@ const UserProfile: NextPage<PageProps> = ({ user }) => {
   }
 
   return (
-    <div className="h-screen mt-10 ml-32">
+    <div className="w-full">
       <Head>
         <title>{user.username} | Galaxy 42</title>
       </Head>

@@ -16,12 +16,12 @@ export const UserDetails = ({ user }: PageProps) => {
   }, [user]);
 
   return (
-    <main className="justify-center w-full h-full">
-      <section className="fixed right-0 px-4 w-72 top-10 shrink-0">
+    <main className="flex flex-row-reverse justify-between w-full">
+      <section className="sticky top-0 flex-none h-screen pl-6 border-l w-60 border-gx-purple-500/40">
         <UserPreview user={user} />
       </section>
 
-      <section className="h-full px-10 border-r border-gx-purple-500/40 mr-72">
+      <section className="w-11/12 h-full px-10 mx-auto mt-10 xl:w-3/4">
         <Tabs
           fstTab="Stories"
           secTab="Planets"
