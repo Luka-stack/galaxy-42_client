@@ -1,12 +1,14 @@
 import classNames from 'classnames';
 import { PlusIcon, AtSymbolIcon } from '@heroicons/react/solid';
-import { useState } from 'react';
+import { Channel } from '../../lib/graphql/planets';
 
-const GROUPS = ['general', 'newbies', 'react v17', 'react v18'];
+interface Props {
+  channels: Channel[];
+  selected: string;
+  select: (id: string) => void;
+}
 
-export const GroupChannels = () => {
-  const [selected, setSelected] = useState('general');
-
+export const GroupChannels = ({ channels, select, selected }: Props) => {
   return (
     <div className="flex flex-col px-4 mb-4 center-center h-1/3">
       <div className="flex justify-between font-semibold uppercase cursor-default text-purplish-500">
@@ -15,17 +17,18 @@ export const GroupChannels = () => {
       </div>
 
       <div className="h-full overflow-y-auto scrollbar-hide">
-        {GROUPS.map((group) => (
+        {channels.map((channel) => (
           <div
-            key={group}
+            key={channel.uuid}
             className={classNames(
               'flex items-center p-1 my-1 space-x-1 rounded-md text-purplish-500 hover:bg-bg-300 cursor-pointer',
-              { 'bg-bg-300': selected === group }
+              { 'bg-bg-300': selected === channel.uuid }
             )}
+            onClick={() => select(channel.uuid)}
           >
             {/* ICON */}
             <AtSymbolIcon className="w-5 h-5" />
-            <h1>{group}</h1>
+            <h1>{channel.name}</h1>
           </div>
         ))}
       </div>

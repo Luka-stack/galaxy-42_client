@@ -11,6 +11,20 @@ export interface Planet {
   createdAt: number;
 }
 
+export interface Channel {
+  uuid: string;
+  name: string;
+}
+
+export interface ChatPlanet {
+  name: string;
+  channels: Channel[];
+  users: {
+    role: 'ADMIN' | 'USER';
+    user: { uuid: string; username: string; imageUrl: string };
+  }[];
+}
+
 export interface PlanetInput {
   name: string;
   bio: string;
@@ -69,6 +83,26 @@ export const GET_PLANET = gql`
       imageUrl
       isPublic
       createdAt
+    }
+  }
+`;
+
+export const GET_PLANET_FOR_CHAT = gql`
+  query getPlanet($planetUuid: String!) {
+    getPlanet(planetUuid: $planetUuid) {
+      name
+      channels {
+        uuid
+        name
+      }
+      users {
+        role
+        user {
+          uuid
+          username
+          imageUrl
+        }
+      }
     }
   }
 `;
