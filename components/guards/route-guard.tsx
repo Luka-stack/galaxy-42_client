@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { getJwtToken } from '../../lib/access-token';
+import { ChatNavigation } from '../chat/chat-navigation';
 
 interface Props {
   children: React.ReactNode;
@@ -37,7 +38,10 @@ export const RouteGuard: FunctionComponent<Props> = ({ children }) => {
   const authCheck = (url: string) => {
     const path = url.split('?')[0];
 
-    if (protectedRoutes.includes(path) && !getJwtToken()) {
+    if (
+      (protectedRoutes.includes(path) || path.includes('chat')) &&
+      !getJwtToken()
+    ) {
       setCanActive(false);
       router.push({
         pathname: '/login',
@@ -48,5 +52,10 @@ export const RouteGuard: FunctionComponent<Props> = ({ children }) => {
     }
   };
 
-  return <>{canActive && children}</>;
+  return (
+    <>
+      {getJwtToken() && <ChatNavigation />}
+      {canActive && children}
+    </>
+  );
 };

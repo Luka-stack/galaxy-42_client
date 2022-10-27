@@ -4,8 +4,11 @@ import { Channel } from '../../lib/graphql/planets';
 
 interface Props {
   channels: Channel[];
-  selected: string;
-  select: (id: string) => void;
+  selected: {
+    recipient: string;
+    toChannel: boolean;
+  };
+  select: (data: { recipient: string; toChannel: boolean }) => void;
 }
 
 export const GroupChannels = ({ channels, select, selected }: Props) => {
@@ -22,9 +25,9 @@ export const GroupChannels = ({ channels, select, selected }: Props) => {
             key={channel.uuid}
             className={classNames(
               'flex items-center p-1 my-1 space-x-1 rounded-md text-purplish-500 hover:bg-bg-300 cursor-pointer',
-              { 'bg-bg-300': selected === channel.uuid }
+              { 'bg-bg-300': selected.recipient === channel.uuid }
             )}
-            onClick={() => select(channel.uuid)}
+            onClick={() => select({ recipient: channel.uuid, toChannel: true })}
           >
             {/* ICON */}
             <AtSymbolIcon className="w-5 h-5" />

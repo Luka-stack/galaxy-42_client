@@ -26,6 +26,8 @@ export const getServerSideProps = async (
 ) => {
   const client = initializeApollo({ headers: context?.req?.headers });
 
+  console.log('HEADERS', context?.req?.headers);
+
   try {
     const {
       data: { getPlanetAuth: planet },
@@ -40,6 +42,8 @@ export const getServerSideProps = async (
       },
     });
   } catch (err: any) {
+    console.log('=====================', err);
+
     if (err.graphQLErrors[0].extensions.response.statusCode === 401) {
       return {
         props: {},

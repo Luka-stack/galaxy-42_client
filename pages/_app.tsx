@@ -21,7 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AuthProvider>
           <div className="flex">
             <Navigation />
-            <ChatNavigation />
+            {/* <ChatNavigation /> */}
 
             <RouteGuard>
               <Component {...pageProps} />

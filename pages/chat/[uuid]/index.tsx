@@ -38,7 +38,7 @@ const ChatPage: NextPage = () => {
   }, [error]);
 
   return (
-    <div className="flex">
+    <div className="flex w-full">
       <Head>
         <title>Chat | Galaxy 42</title>
       </Head>

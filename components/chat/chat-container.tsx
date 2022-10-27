@@ -1,4 +1,7 @@
+import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
+import clip from 'text-clipper';
+import { GET_MESSAGES } from '../../lib/graphql/messages';
 import { ChatPlanet } from '../../lib/graphql/planets';
 import { Chat } from './chat';
 import { ChatInput } from './chat-input';
@@ -10,26 +13,37 @@ interface Props {
 }
 
 export const ChatContainer = ({ planet }: Props) => {
-  const [conversation, setConversation] = useState<string>(
-    planet.channels.find((ch) => ch.name === 'public')?.uuid || ''
-  );
+  const [conversation, setConversation] = useState<{
+    recipient: string;
+    toChannel: boolean;
+  }>({
+    recipient: planet.channels.find((ch) => ch.name === 'public')?.uuid || '',
+    toChannel: true,
+  });
+
+  const [getMessages, { loading, data, error }] = useLazyQuery(GET_MESSAGES);
 
   useEffect(() => {
     if (conversation) {
-      console.log('GET MESSAGES FOR', conversation);
+      getMessages({
+        variables: {
+          query: conversation,
+        },
+      });
     }
   }, [conversation]);
 
   return (
     <div className="w-full h-screen">
       {/* Header */}
-      <div className="flex items-center flex-none w-full h-14 bg-bg-400/50">
-        <h1 className="w-full text-3xl font-bold text-center text-gx-purple-500">
+      <div className="flex items-center flex-none w-full border-b h-14 bg-bg-400/50 border-gx-purple-500">
+        <h1 className="flex-none w-1/4 pl-5 text-lg font-bold truncate text-purplish-500">
           {planet.name}
         </h1>
+        <h1 className="w-full text-3xl font-bold text-center text-gx-purple-500"></h1>
       </div>
 
-      <div className="flex h-[calc(100%-3.5rem)] ">
+      <div className="flex h-[calc(100%-3.5rem)]">
         {/* Left Panel */}
         <section className="flex-none w-1/4 py-5 bg-bg-400/50">
           <GroupChannels
@@ -46,8 +60,12 @@ export const ChatContainer = ({ planet }: Props) => {
 
         {/* Right Panel */}
         <main className="flex flex-col justify-between w-full">
-          <Chat />
-          <ChatInput />
+          {!loading && data && (
+            <>
+              <Chat messages={data.getMessages} />
+              <ChatInput />
+            </>
+          )}
         </main>
       </div>
     </div>
