@@ -12,9 +12,10 @@ import { UserChannels } from './user-channels';
 
 interface Props {
   planet: ChatPlanet;
+  refetch: () => void;
 }
 
-export const ChatContainer = ({ planet }: Props) => {
+export const ChatContainer = ({ refetch, planet }: Props) => {
   const setChatId = useSetRecoilState(chatId);
   const setChatMessages = useSetRecoilState(chatMessages);
 
@@ -58,6 +59,8 @@ export const ChatContainer = ({ planet }: Props) => {
         {/* Left Panel */}
         <section className="flex-none w-1/4 py-5 bg-bg-400/50">
           <GroupChannels
+            planetId={planet.uuid}
+            refetch={refetch}
             channels={planet.channels}
             select={setConversation}
             selected={conversation}

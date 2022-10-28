@@ -12,8 +12,18 @@ const ChatPage: NextPage = () => {
 
   const [planet, setPlanet] = useState<ChatPlanet | null>(null);
 
-  const [getPlanet, { loading, data, error }] =
-    useLazyQuery(GET_PLANET_FOR_CHAT);
+  const [getPlanet, { loading, data, error, refetch }] = useLazyQuery(
+    GET_PLANET_FOR_CHAT,
+    { refetchWritePolicy: 'merge' }
+  );
+
+  const queryRefetch = () => {
+    refetch({
+      variables: {
+        planetUuid: router.query.uuid,
+      },
+    });
+  };
 
   useEffect(() => {
     if (router.query.uuid) {
@@ -44,7 +54,7 @@ const ChatPage: NextPage = () => {
       </Head>
 
       <main className="flex w-full h-screen">
-        {planet && <ChatContainer planet={planet} />}
+        {planet && <ChatContainer planet={planet} refetch={queryRefetch} />}
       </main>
     </div>
   );

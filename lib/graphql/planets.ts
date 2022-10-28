@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { Channel } from './channels';
 
 export interface Planet {
   uuid: string;
@@ -11,12 +12,8 @@ export interface Planet {
   createdAt: number;
 }
 
-export interface Channel {
-  uuid: string;
-  name: string;
-}
-
 export interface ChatPlanet {
+  uuid: string;
   name: string;
   channels: Channel[];
   users: {
@@ -90,6 +87,7 @@ export const GET_PLANET = gql`
 export const GET_PLANET_FOR_CHAT = gql`
   query getPlanet($planetUuid: String!) {
     getPlanet(planetUuid: $planetUuid) {
+      uuid
       name
       channels {
         uuid
