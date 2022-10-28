@@ -11,6 +11,7 @@ import { AuthProvider } from '../context/auth-provider';
 import { RouteGuard } from '../components/guards/route-guard';
 import { Navigation } from '../components/navigation';
 import { ChatNavigation } from '../components/chat/chat-navigation';
+import { MessageProvider } from '../context/message-provider';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);
@@ -21,27 +22,26 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AuthProvider>
           <div className="flex">
             <Navigation />
-            {/* <ChatNavigation /> */}
 
             <RouteGuard>
               <Component {...pageProps} />
             </RouteGuard>
           </div>
-
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            draggable={false}
-            rtl={false}
-            closeOnClick
-            pauseOnFocusLoss
-            pauseOnHover
-            theme="dark"
-          />
         </AuthProvider>
       </RecoilRoot>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        draggable={false}
+        rtl={false}
+        closeOnClick
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="dark"
+      />
     </ApolloProvider>
   );
 }

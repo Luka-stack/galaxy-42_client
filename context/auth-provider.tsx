@@ -170,7 +170,7 @@ export const AuthProvider: FunctionComponent<Props> = ({ children }) => {
   return (
     <DispatchContext.Provider value={dispatch}>
       <StateContext.Provider value={state}>
-        {state.user && <UserData />}
+        {state.user && <UserData user={state.user} />}
         {children}
       </StateContext.Provider>
     </DispatchContext.Provider>

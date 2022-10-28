@@ -42,8 +42,6 @@ export const getServerSideProps = async (
       },
     });
   } catch (err: any) {
-    console.log('=====================', err);
-
     if (err.graphQLErrors[0].extensions.response.statusCode === 401) {
       return {
         props: {},

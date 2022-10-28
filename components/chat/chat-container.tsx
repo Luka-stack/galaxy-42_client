@@ -1,8 +1,10 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import clip from 'text-clipper';
 import { GET_MESSAGES } from '../../lib/graphql/messages';
 import { ChatPlanet } from '../../lib/graphql/planets';
+import { chatId, chatMessages } from '../../lib/recoil/atoms';
 import { Chat } from './chat';
 import { ChatInput } from './chat-input';
 import { GroupChannels } from './group-channels';
@@ -13,6 +15,9 @@ interface Props {
 }
 
 export const ChatContainer = ({ planet }: Props) => {
+  const setChatId = useSetRecoilState(chatId);
+  const setChatMessages = useSetRecoilState(chatMessages);
+
   const [conversation, setConversation] = useState<{
     recipient: string;
     toChannel: boolean;
@@ -21,10 +26,16 @@ export const ChatContainer = ({ planet }: Props) => {
     toChannel: true,
   });
 
-  const [getMessages, { loading, data, error }] = useLazyQuery(GET_MESSAGES);
+  const [getMessages, { loading, error }] = useLazyQuery(GET_MESSAGES, {
+    onCompleted(data) {
+      setChatMessages(data?.getMessages || []);
+    },
+    fetchPolicy: 'no-cache',
+  });
 
   useEffect(() => {
     if (conversation) {
+      setChatId(conversation.recipient);
       getMessages({
         variables: {
           query: conversation,
@@ -60,10 +71,10 @@ export const ChatContainer = ({ planet }: Props) => {
 
         {/* Right Panel */}
         <main className="flex flex-col justify-between w-full">
-          {!loading && data && (
+          {!loading && (
             <>
-              <Chat messages={data.getMessages} />
-              <ChatInput />
+              <Chat />
+              <ChatInput conversation={conversation} />
             </>
           )}
         </main>

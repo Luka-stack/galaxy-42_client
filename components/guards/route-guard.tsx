@@ -38,10 +38,7 @@ export const RouteGuard: FunctionComponent<Props> = ({ children }) => {
   const authCheck = (url: string) => {
     const path = url.split('?')[0];
 
-    if (
-      (protectedRoutes.includes(path) || path.includes('chat')) &&
-      !getJwtToken()
-    ) {
+    if (protectedRoutes.includes(path) && !getJwtToken()) {
       setCanActive(false);
       router.push({
         pathname: '/login',
@@ -54,7 +51,7 @@ export const RouteGuard: FunctionComponent<Props> = ({ children }) => {
 
   return (
     <>
-      {getJwtToken() && <ChatNavigation />}
+      <ChatNavigation />
       {canActive && children}
     </>
   );

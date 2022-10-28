@@ -5,7 +5,7 @@ interface Props {
 
 export const AnotherMessage = ({ createdAt, content }: Props) => {
   return (
-    <div className="flex px-4 py-4 space-x-4 hover:bg-bg-600 border-gx-purple-500/20 group min-h-[5rem]">
+    <div className="flex px-4 py-2 space-x-4 hover:bg-bg-600 border-gx-purple-500/20 group">
       <div className="flex-none w-16">
         <h3 className="hidden text-xs text-purplish-500 group-hover:inline">
           {new Date(createdAt).toLocaleString()}

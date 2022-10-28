@@ -4,11 +4,18 @@ export interface Message {
   uuid: string;
   content: string;
   createdAt: string;
+  toChannel: string;
   author: {
     uuid: string;
     username: string;
     imageUrl: string;
   };
+}
+
+export interface MessageInput {
+  content: string;
+  recipient: string;
+  toChannel: boolean;
 }
 
 export interface QueryMessageInput {
@@ -22,6 +29,29 @@ export const GET_MESSAGES = gql`
       uuid
       content
       createdAt
+      author {
+        uuid
+        username
+        imageUrl
+      }
+    }
+  }
+`;
+
+export const SEND_MESSAGE = gql`
+  mutation sendMessage($message: MessageInput!) {
+    sendMessage(message: $message)
+  }
+`;
+
+export const MESSAGE_CREATED = gql`
+  subscription messageCreated {
+    messageCreated {
+      uuid
+      content
+      createdAt
+      toChannel
+      recipient
       author {
         uuid
         username

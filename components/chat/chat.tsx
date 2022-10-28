@@ -1,16 +1,16 @@
-import { Message } from '../../lib/graphql/messages';
+import { useRecoilValue } from 'recoil';
+
+import { chatMessages } from '../../lib/recoil/atoms';
 import { AnotherMessage } from './another-message';
 import { FirstMessage } from './first-message';
 
-interface Props {
-  messages: Message[];
-}
+export const Chat = () => {
+  const messages = useRecoilValue(chatMessages);
 
-export const Chat = ({ messages }: Props) => {
   let lastMsgAuthor = '';
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-y-auto scrollbar-hide">
       {messages.map((m) => {
         if (m.author.uuid === lastMsgAuthor) {
           return (
