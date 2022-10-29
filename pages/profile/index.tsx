@@ -28,13 +28,13 @@ const Profile: NextPage = () => {
   }, [user]);
 
   return (
-    <div className="mt-10 ml-32">
+    <div className="w-full mt-10">
       <Head>
         <title>{user?.username} | Galaxy 42</title>
       </Head>
 
-      <main className="w-11/12 mx-auto">
-        <div className="px-4 py-2 mx-auto space-x-4 border rounded-lg shadow-md shadow-gx-purple-500 w-fit border-gx-purple-500/50">
+      <main className="w-11/12 mx-auto xl:w-3/4">
+        <div className="px-4 py-2 mx-auto space-x-4 border rounded-lg w-fit border-gx-purple-500">
           <Link href="/planets/new">
             <button className="gx-btn">Create New Planet</button>
           </Link>

@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { Channel } from './channels';
 
 export interface Planet {
   uuid: string;
@@ -9,6 +10,16 @@ export interface Planet {
   imageUrl: string;
   isPublic: boolean;
   createdAt: number;
+}
+
+export interface ChatPlanet {
+  uuid: string;
+  name: string;
+  channels: Channel[];
+  users: {
+    role: 'ADMIN' | 'USER';
+    user: { uuid: string; username: string; imageUrl: string };
+  }[];
 }
 
 export interface PlanetInput {
@@ -69,6 +80,27 @@ export const GET_PLANET = gql`
       imageUrl
       isPublic
       createdAt
+    }
+  }
+`;
+
+export const GET_PLANET_FOR_CHAT = gql`
+  query getMyPlanet($planetUuid: String!) {
+    getMyPlanet(planetUuid: $planetUuid) {
+      uuid
+      name
+      channels {
+        uuid
+        name
+      }
+      users {
+        role
+        user {
+          uuid
+          username
+          imageUrl
+        }
+      }
     }
   }
 `;

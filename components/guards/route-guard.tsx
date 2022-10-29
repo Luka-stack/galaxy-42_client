@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { getJwtToken } from '../../lib/access-token';
+import { ChatNavigation } from '../navigation/chat-navigation';
 
 interface Props {
   children: React.ReactNode;

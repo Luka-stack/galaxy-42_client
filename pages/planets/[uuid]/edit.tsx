@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import type { GetServerSidePropsContext, NextPage } from 'next/types';
-import { PlanetEdit } from '../../../features/planets/planet-edit';
 
+import { PlanetEdit } from '../../../features/planets/planet-edit';
 import { addApolloState, initializeApollo } from '../../../lib/apollo';
 import { GET_PLANET_AUTH, Planet } from '../../../lib/graphql/planets';
 
@@ -11,7 +11,7 @@ interface PageProps {
 
 const EditPlanet: NextPage<PageProps> = ({ planet }) => {
   return (
-    <div className="my-10 ml-32">
+    <div className="w-full my-10">
       <Head>
         <title>{planet.name} | Galaxy 42</title>
       </Head>

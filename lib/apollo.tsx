@@ -55,12 +55,16 @@ const getOrCreateWebsocketLink = () => {
   return graphqlWsLink;
 };
 
-const makeTokenRefreshLink = () => {
+const makeTokenRefreshLink = (headers: IncomingHttpHeaders | null = null) => {
   return new TokenRefreshLink({
     isTokenValidOrUndefined: (operation: Operation) => {
       const token = getJwtToken();
 
       if (operation.operationName === 'me' && !token) {
+        return false;
+      }
+
+      if (operation.operationName === 'getPlanetAuth' && !token) {
         return false;
       }
 
@@ -75,12 +79,13 @@ const makeTokenRefreshLink = () => {
       return expirationTimeInSeconds >= now.getTime();
     },
     fetchAccessToken: async () => {
+      const header: any = { 'Content-Type': 'application/json' };
+      if (isServer()) header['cookie'] = headers?.cookie ?? '';
+
       const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URI!, {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: header,
         body: JSON.stringify({
           query: `
             query refreshToken {
@@ -114,7 +119,7 @@ const makeTokenRefreshLink = () => {
   });
 };
 
-const createLink = () => {
+const createLink = (headers: IncomingHttpHeaders | null = null) => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
@@ -148,7 +153,7 @@ const createLink = () => {
 
   if (isServer()) {
     return ApolloLink.from([
-      makeTokenRefreshLink(),
+      makeTokenRefreshLink(headers),
       authLink,
 
       //@ts-ignore
@@ -176,7 +181,7 @@ const createLink = () => {
 const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   return new ApolloClient({
     ssrMode: isServer(),
-    link: createLink(),
+    link: createLink(headers),
     cache: new InMemoryCache({
       possibleTypes: {
         authenticatedItem: ['User'],

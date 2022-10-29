@@ -1,15 +1,15 @@
 import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import type { ApolloError } from '@apollo/client';
 import classNames from 'classnames';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import type { ApolloError } from '@apollo/client';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 
 import { Topic } from '../topic';
-import { Planet, PlanetInput } from '../../lib/graphql/planets';
 import { useTopics } from '../../hooks/use-topics';
 import { SectionSeparator } from '../section-separator';
+import { Planet, PlanetInput } from '../../lib/graphql/planets';
 
 interface Props {
   planet?: Planet;
@@ -104,7 +104,7 @@ export const PlanetForm = ({ planet, setVariables, loading, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col items-center w-full"
+      className="flex flex-col items-center w-full mx-auto xl:w-4/5"
       onSubmit={handleSubmit(onSubmit)}
     >
       <input
@@ -115,7 +115,7 @@ export const PlanetForm = ({ planet, setVariables, loading, error }: Props) => {
       />
 
       <div
-        className="relative w-4/5 border rounded-lg shadow-md cursor-pointer h-80 border-gx-purple-500 shadow-purple-neon-500"
+        className="relative w-4/5 overflow-hidden border rounded-lg cursor-pointer h-80 border-gx-purple-500"
         onClick={openFileInput}
       >
         <img

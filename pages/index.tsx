@@ -13,7 +13,7 @@ const Home: NextPage = () => {
   const { user } = useAuthState();
 
   return (
-    <div className="mt-10 ml-32">
+    <div className="w-full mt-10">
       <Head>
         <title>Galaxy 42</title>
         <meta
@@ -23,7 +23,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="w-11/12 mx-auto">
+      <main className="w-11/12 mx-auto xl:w-3/4">
         {user ? (
           <SectionSeparator title="The latest creations" style="mt-10 pl-4" />
         ) : (

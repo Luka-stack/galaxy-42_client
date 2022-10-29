@@ -37,7 +37,7 @@ const NewPlanet: NextPage = () => {
   }, [variables, createPlanet]);
 
   return (
-    <div className="my-10 ml-32">
+    <div className="w-full my-10">
       <Head>
         <title>New Planet | Galaxy 42</title>
       </Head>

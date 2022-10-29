@@ -1,5 +1,7 @@
 import { useQuery, useSubscription } from '@apollo/client';
-import { useSetRecoilState } from 'recoil';
+import { userAgent } from 'next/server';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { MESSAGE_CREATED } from '../lib/graphql/messages';
 
 import {
   GET_NOTIFICATIONS,
@@ -11,14 +13,21 @@ import {
   Request,
   REQUEST_CREATED,
 } from '../lib/graphql/requests';
-import { hasNewNotifications } from '../lib/recoil/atoms';
+import { User } from '../lib/graphql/users';
+import { chatId, chatMessages, hasNewNotifications } from '../lib/recoil/atoms';
 import { useAuthDispatch } from './auth-provider';
 
 const notificationRoute = '/profile/notifications';
 
-export const UserData = () => {
+interface Props {
+  user: User;
+}
+
+export const UserData = ({ user }: Props) => {
   const dispatch = useAuthDispatch();
   const setHasNew = useSetRecoilState(hasNewNotifications);
+  const currChatId = useRecoilValue(chatId);
+  const [getChatMessages, setChatMessages] = useRecoilState(chatMessages);
 
   useQuery(GET_REQUESTS, {
     onCompleted: ({ getRequests }) => {
@@ -83,6 +92,26 @@ export const UserData = () => {
 
       if (!document.location.pathname.match(notificationRoute)) {
         setHasNew(true);
+      }
+    },
+  });
+
+  useSubscription(MESSAGE_CREATED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.data?.messageCreated) {
+        const message = subscriptionData.data?.messageCreated;
+        let recipient = message.recipient;
+
+        if (!message.toChannel && message.recipient === user.uuid) {
+          recipient = message.author.uuid;
+        }
+
+        if (recipient !== currChatId) {
+          // Show new message notification
+          return;
+        }
+
+        setChatMessages([...getChatMessages, message]);
       }
     },
   });

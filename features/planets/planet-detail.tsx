@@ -16,7 +16,7 @@ export const PlanetDetail = ({ planet }: PageProps) => {
   const { user } = useAuthState();
 
   return (
-    <main className="flex items-center w-4/5 mx-auto">
+    <main className="flex items-center w-11/12 mx-auto xl:w-4/5">
       <div className="flex flex-col">
         <div className="relative w-full border rounded-lg shadow-md h-80 border-gx-purple-500 shadow-purple-neon-500">
           <Image

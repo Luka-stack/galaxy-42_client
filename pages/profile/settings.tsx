@@ -5,7 +5,7 @@ import { UserSettings } from '../../features/users/user-settings';
 
 const SettingsPage: NextPage = () => {
   return (
-    <div className="my-10 ml-32">
+    <div className="w-full my-10">
       <Head>
         <title>Password Settings | Galaxy 42</title>
       </Head>

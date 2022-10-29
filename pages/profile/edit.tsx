@@ -9,7 +9,7 @@ const EditProfile: NextPage = () => {
   const user = useRecoilValue(authState);
 
   return (
-    <div className="my-10 ml-32">
+    <div className="w-full my-10">
       <Head>
         <title>{user?.username || 'Edit Profile'} | Galaxy 42</title>
       </Head>

@@ -31,7 +31,9 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.34.0",
     "react-toastify": "^9.0.8",
+    "reactjs-popup": "^2.0.5",
     "recoil": "^0.7.5",
+    "tailwind-scrollbar-hide": "^1.1.7",
     "text-clipper": "^2.2.0",
     "yup": "^0.32.11"
   },

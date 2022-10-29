@@ -5,6 +5,7 @@ import React, {
   useContext,
   useReducer,
 } from 'react';
+import { ChatNavigation } from '../components/navigation/chat-navigation';
 
 import { Notification } from '../lib/graphql/notifications';
 import { Request } from '../lib/graphql/requests';
@@ -169,7 +170,7 @@ export const AuthProvider: FunctionComponent<Props> = ({ children }) => {
   return (
     <DispatchContext.Provider value={dispatch}>
       <StateContext.Provider value={state}>
-        {state.user && <UserData />}
+        {state.user && <UserData user={state.user} />}
         {children}
       </StateContext.Provider>
     </DispatchContext.Provider>
