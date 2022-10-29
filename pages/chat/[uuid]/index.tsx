@@ -1,7 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { NextPage } from 'next/types';
+import type { NextPage } from 'next/types';
 import { useEffect, useState } from 'react';
 
 import { ChatContainer } from '../../../components/chat/chat-container';
@@ -12,7 +12,7 @@ const ChatPage: NextPage = () => {
 
   const [planet, setPlanet] = useState<ChatPlanet | null>(null);
 
-  const [getPlanet, { loading, data, error, refetch }] = useLazyQuery(
+  const [getMyPlanet, { loading, data, error, refetch }] = useLazyQuery(
     GET_PLANET_FOR_CHAT,
     { refetchWritePolicy: 'merge' }
   );
@@ -27,7 +27,9 @@ const ChatPage: NextPage = () => {
 
   useEffect(() => {
     if (router.query.uuid) {
-      getPlanet({
+      console.log(router.query.uuid);
+
+      getMyPlanet({
         variables: {
           planetUuid: router.query.uuid,
         },
@@ -37,15 +39,13 @@ const ChatPage: NextPage = () => {
 
   useEffect(() => {
     if (data) {
-      setPlanet(data.getPlanet);
+      setPlanet(data.getMyPlanet);
     }
   }, [data]);
 
-  useEffect(() => {
-    if (error) {
-      console.log('Error', error);
-    }
-  }, [error]);
+  if (error) {
+    router.push('/');
+  }
 
   return (
     <div className="flex w-full">

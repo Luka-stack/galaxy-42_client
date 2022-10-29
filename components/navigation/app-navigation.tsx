@@ -5,18 +5,21 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import { BellIcon, GlobeIcon } from '@heroicons/react/outline';
 
-import LogoImg from '../assets/black-hole_64.png';
-import BGImg from '../assets/BG-Cosmo-Addons.jpg';
+import LogoImg from '../../assets/black-hole_64.png';
+import BGImg from '../../assets/BG-Cosmo-Addons.jpg';
 
-import { useAuthState } from '../context/auth-provider';
-import { hasNewNotifications } from '../lib/recoil/atoms';
-import { LOGOUT_USER } from '../lib/graphql/users';
+import { useAuthState } from '../../context/auth-provider';
+import { hasNewNotifications } from '../../lib/recoil/atoms';
+import { LOGOUT_USER, User } from '../../lib/graphql/users';
 
-export const Navigation = () => {
+interface Props {
+  user: User | null;
+}
+
+export const AppNavigation = ({ user }: Props) => {
   const router = useRouter();
   const authRoute = ['/register', '/login'].includes(router.pathname);
 
-  const { user } = useAuthState();
   const hasNew = useRecoilValue(hasNewNotifications);
 
   const [logout] = useMutation(LOGOUT_USER, {

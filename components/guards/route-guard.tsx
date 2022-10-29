@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { getJwtToken } from '../../lib/access-token';
-import { ChatNavigation } from '../chat/chat-navigation';
+import { ChatNavigation } from '../navigation/chat-navigation';
 
 interface Props {
   children: React.ReactNode;
@@ -49,10 +49,5 @@ export const RouteGuard: FunctionComponent<Props> = ({ children }) => {
     }
   };
 
-  return (
-    <>
-      <ChatNavigation />
-      {canActive && children}
-    </>
-  );
+  return <>{canActive && children}</>;
 };

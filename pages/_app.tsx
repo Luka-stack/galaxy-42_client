@@ -9,9 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { useApollo } from '../lib/apollo';
 import { AuthProvider } from '../context/auth-provider';
 import { RouteGuard } from '../components/guards/route-guard';
-import { Navigation } from '../components/navigation';
-import { ChatNavigation } from '../components/chat/chat-navigation';
-import { MessageProvider } from '../context/message-provider';
+import { Navigation } from '../components/navigation/navigation';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const apolloClient = useApollo(pageProps);

@@ -26,8 +26,6 @@ export const getServerSideProps = async (
 ) => {
   const client = initializeApollo({ headers: context?.req?.headers });
 
-  console.log('HEADERS', context?.req?.headers);
-
   try {
     const {
       data: { getPlanetAuth: planet },

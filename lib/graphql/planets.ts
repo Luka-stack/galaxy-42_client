@@ -85,8 +85,8 @@ export const GET_PLANET = gql`
 `;
 
 export const GET_PLANET_FOR_CHAT = gql`
-  query getPlanet($planetUuid: String!) {
-    getPlanet(planetUuid: $planetUuid) {
+  query getMyPlanet($planetUuid: String!) {
+    getMyPlanet(planetUuid: $planetUuid) {
       uuid
       name
       channels {

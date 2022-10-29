@@ -3,10 +3,13 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Popup from 'reactjs-popup';
 
-import { useAuthState } from '../../context/auth-provider';
+import { User } from '../../lib/graphql/users';
 
-export const ChatNavigation = () => {
-  const { user } = useAuthState();
+interface Props {
+  user: User;
+}
+
+export const ChatNavigation = ({ user }: Props) => {
   const router = useRouter();
 
   const [selected, setSelected] = useState(user?.planets[0].planet.uuid || '');
